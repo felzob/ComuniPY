@@ -44,7 +44,7 @@ export function AdminDashboard({ user, onLogout }: Props) {
   const tasaRecaudacion = ((totalRecaudado / totalEmitido) * 100).toFixed(1);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50/50" data-testid="admin-dashboard">
       <HamburgerMenu
         items={menuItems}
         activeItem={activeTab}

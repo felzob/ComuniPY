@@ -59,7 +59,9 @@ export function HamburgerMenu({ items, activeItem, onSelect, subtitle, userName,
                 <line x1="4" y1="17" x2="14" y2="17" />
               </svg>
             </button>
-            <img src={dark ? "/Logo Dark.png" : "/Logo Light.png"} alt="ComuniPy" className="h-11 object-contain" />
+            <div className={dark ? "px-2 py-1 rounded-lg bg-white" : ""}>
+              <img src="/Logo Light.png" alt="ComuniPy" className="h-11 object-contain" />
+            </div>
             <div className="hidden sm:block min-w-0">
               <p className={`text-[11px] font-semibold uppercase tracking-wider truncate ${dark ? "text-cyan-300" : "text-blue-700"}`}>
                 {subtitle}
@@ -105,7 +107,9 @@ export function HamburgerMenu({ items, activeItem, onSelect, subtitle, userName,
       >
         {/* Header logo */}
         <div className={`px-5 py-4 flex items-center justify-between shrink-0 border-b ${dark ? "border-white/10" : "border-ink-100"}`}>
-          <img src={dark ? "/Logo Dark.png" : "/Logo Light.png"} alt="ComuniPy" className="h-12 object-contain" />
+          <div className={dark ? "px-2 py-1 rounded-lg bg-white" : ""}>
+            <img src="/Logo Light.png" alt="ComuniPy" className="h-12 object-contain" />
+          </div>
           <button
             onClick={() => setIsOpen(false)}
             data-testid="hamburger-close"
