@@ -82,7 +82,7 @@ export function ResidenteDashboard({ user, onLogout }: Props) {
       />
 
       {paymentSuccess && (
-        <div className="fixed top-20 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-40 rounded-2xl bg-emerald-600 text-white p-4 shadow-elev-3 anim-fade-up">
+        <div className="fixed top-20 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-40 rounded-2xl bg-emerald-600 text-white p-4 shadow-elev-3 anim-fade-up" role="status" data-testid="success-toast">
           <p className="text-sm font-semibold">✓ Pago registrado exitosamente</p>
           <p className="text-xs opacity-90 mt-0.5">Comprobante enviado a tu email</p>
         </div>

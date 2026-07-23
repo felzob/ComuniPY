@@ -99,6 +99,7 @@ export function LandingPage({ onLogin }: Props) {
             <div className="flex items-center gap-2">
               <a
                 href="#contacto"
+                data-testid="nav-contacto"
                 className="hidden md:inline-flex px-4 py-2 text-[13px] font-medium text-ink-700 hover:text-ink-900 rounded-lg hover:bg-ink-100/70 transition-colors"
               >
                 Contacto

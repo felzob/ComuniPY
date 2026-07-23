@@ -63,8 +63,8 @@ export default function Home() {
   }
 
   const handleLogout = () => {
-    setSession({ userId: null, showLogin: false });
     try { localStorage.removeItem(SESSION_KEY); } catch { /* ignore */ }
+    setSession({ userId: null, showLogin: false });
   };
 
   switch (currentUser.role) {
