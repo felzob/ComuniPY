@@ -9,3 +9,9 @@ out/
 .DS_Store
 *.pem
 .env*.local
+.env
+.env.*
+*.env
+credentials.json
+*.key
+.credentials

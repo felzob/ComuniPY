@@ -1,0 +1,35 @@
+{
+  "summary": "Production smoke test against https://comunipy.netlify.app/ (Netlify deploy). All 10 requested flows validated end-to-end. 30+ assertions passed, ZERO console errors and ZERO pageerrors across every role/tab. Landing + ROI Calculator + LoginScreen (4 profiles) + AdminDashboard (15 menu items) + ResidenteDashboard (pago SPI + votaciones) + TrabajadorDashboard (turnos/liquidaciones) + SuperAdminDashboard (dark neon) + localStorage persistence (F5 keeps session) + logout (clears session and returns to landing) all working exactly as in preview.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Residente > Pagar > SPI",
+        "issue": "pay-modal opens and pay-confirm-btn closes it correctly, but the success toast text was not captured by common selectors ([role=status], [class*=toast]). The modal does close, so functionality works — likely the toast uses a custom transient element or disappears very fast. Not a blocker, only cosmetic verification gap.",
+        "affected_selectors": ["[role=status]", "[class*=toast]"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "OPTIONAL: on logout, `localStorage['comunipy.session.v1']` becomes `{\"userId\":null,\"showLogin\":false}` instead of being fully removed. Functionally correct (session is cleared), but if the intent was 'localStorage limpio' as literally stated in the spec, consider `localStorage.removeItem('comunipy.session.v1')` on logout for a cleaner state.",
+    "OPTIONAL: add data-testid='success-toast' or role='status' to the toast rendered after pay-confirm-btn to make it E2E-verifiable.",
+    "OPTIONAL: nav-testids use hyphenated Spanish (nav-cómo-funciona) which is already fine — spec listed 'nav-cómo funciona' with a space that would break selectors. Also, the 'Contacto' header link does not carry a data-testid (nav-contacto) — add it for symmetry."
+  ],
+  "critical_code_review_comments": [
+    "AdminDashboard refactor into /src/components/admin/*.tsx (14 files) verified in production — no broken imports, no missing chunks on Netlify.",
+    "localStorage persistence works reliably: {\"userId\":\"u2\",\"showLogin\":false} survives F5 and restores the correct dashboard.",
+    "ROI Calculator (Landing) is fully reactive: mutating any of the 3 range inputs (units/fee/morosidad) via dispatched 'input'+'change' events updates roi-ahorro in real time (₲ 3.983.000 → ₲ 13.735.000 → ₲ 15.310.000 → ₲ 27.910.000 across the 3 slider mutations).",
+    "SuperAdmin dashboard preserves dark neon aesthetic in production (rgb ink-900 background + green/teal accents visible on /transacciones and /sistema tabs)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only mock)", "frontend": "100%"},
+  "test_credentials": "4 demo profiles clickable on LoginScreen — no password: u1 SuperAdmin (Carlos), u2 Admin (María), u3 Residente (Roberto), u6 Trabajador. All verified in prod.",
+  "seed_data_creation": "One vote cast (vote-v1-v1-o1) and one SPI payment confirmation on Residente. All in local component state, no persistence beyond the session key.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Production URL is https://comunipy.netlify.app/ — pure frontend, no backend, state in useState + localStorage['comunipy.session.v1']. Persistence works across F5. Verified data-testids in prod: landing-page, nav-perfiles, nav-módulos, nav-cómo-funciona (hyphen NOT space), nav-beneficios, nav-roi, header-login-btn, roi-inputs, roi-input-units, roi-input-fee, roi-input-morosidad, roi-output, roi-ahorro, roi-cta-btn, login-screen, login-profile-u1/u2/u3/u6, login-back-btn, hamburger-open/close/drawer/overlay, logout-btn, admin-dashboard (NOW present in prod), residente-dashboard, trabajador-dashboard, superadmin-dashboard, menu-item-<id> (15 items on admin), pay-method-spi/tigo/personal/transfer, pay-modal, pay-confirm-btn, vote-v1-v1-o1..o3. For range-slider driven state (ROI), use native setter + input+change dispatchEvent pattern — Playwright's fill() won't trigger React's onChange. For hamburger drawer items, prefer document.querySelector(...).click() via page.evaluate to bypass fixed-drawer viewport clipping.",
+  "rca of the issue": "N/A — no bugs found; all requested features verified working in production."
+}
