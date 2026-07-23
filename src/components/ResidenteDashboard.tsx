@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { User, cobros, reclamos, votaciones, formatGuaranies, getEstadoVotacionColor } from "@/data/mock-data";
+import { User, votaciones, formatGuaranies } from "@/data/mock-data";
+import { reclamos } from "@/data/mock-data";
 import { HamburgerMenu } from "./HamburgerMenu";
 
 type ResidenteTab = "inicio" | "pagos" | "historial" | "reclamos" | "votaciones" | "documentos" | "perfil";
@@ -32,7 +33,7 @@ export function ResidenteDashboard({ user, onLogout }: Props) {
     { id: "perfil", label: "Mi Perfil", icon: "👤" },
   ];
 
-  const handlePay = (method: string) => {
+  const handlePay = (_method: string) => {
     setShowPayModal(false);
     setPaymentSuccess(true);
     setTimeout(() => setPaymentSuccess(false), 4000);
@@ -61,8 +62,14 @@ export function ResidenteDashboard({ user, onLogout }: Props) {
     setTimeout(() => setShowReclamoSuccess(false), 3000);
   };
 
+  const estadoBadge = (estado: string) => {
+    if (estado === "resuelto") return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    if (estado === "en_proceso") return "bg-amber-50 text-amber-700 border-amber-200";
+    return "bg-rose-50 text-rose-700 border-rose-200";
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50/50" data-testid="residente-dashboard">
       <HamburgerMenu
         items={menuItems}
         activeItem={activeTab}
@@ -74,60 +81,67 @@ export function ResidenteDashboard({ user, onLogout }: Props) {
         onLogout={onLogout}
       />
 
-      {/* Success toast */}
       {paymentSuccess && (
-        <div className="fixed top-16 left-4 right-4 bg-green-600 text-white p-4 rounded-xl shadow-lg z-30 animate-pulse">
-          <p className="text-sm font-medium">✓ Pago registrado exitosamente</p>
-          <p className="text-xs opacity-80">Comprobante enviado a tu email</p>
+        <div className="fixed top-20 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-40 rounded-2xl bg-emerald-600 text-white p-4 shadow-elev-3 anim-fade-up">
+          <p className="text-sm font-semibold">✓ Pago registrado exitosamente</p>
+          <p className="text-xs opacity-90 mt-0.5">Comprobante enviado a tu email</p>
         </div>
       )}
 
-      <main className="pt-20 px-4 pb-6 max-w-2xl mx-auto">
-        {/* ============ INICIO / FEED ============ */}
+      <main className="pt-24 px-4 pb-10 max-w-3xl mx-auto anim-fade-up">
+        {/* INICIO */}
         {activeTab === "inicio" && (
-          <div className="space-y-4 pt-2">
+          <div className="space-y-5">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-700">Mi Comunidad</p>
+              <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Hola, {user.nombre.split(" ")[0]} 👋</h1>
+              <p className="text-[13px] text-ink-500">Este es el resumen de tu unidad</p>
+            </div>
+
             {/* Estado financiero */}
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <div className="flex items-center justify-between mb-3">
+            <div className="relative overflow-hidden rounded-2xl bg-grad-brand text-white p-5 shadow-brand">
+              <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-white/10 blur-2xl" />
+              <div className="relative flex items-start justify-between">
                 <div>
-                  <p className="text-xs text-gray-500">Gasto común — Julio 2026</p>
-                  <p className="text-2xl font-bold text-gray-900">₲ 812.000</p>
+                  <p className="text-[11px] uppercase tracking-widest text-blue-100 font-semibold">Gasto común · Julio 2026</p>
+                  <p className="text-3xl font-extrabold mt-1">₲ 812.000</p>
                 </div>
-                <span className="text-xs px-3 py-1.5 rounded-full font-medium bg-green-100 text-green-800">PAGADO ✓</span>
+                <span className="pill bg-emerald-400/20 text-emerald-100 border border-emerald-300/30">PAGADO ✓</span>
               </div>
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <p className="text-xs text-gray-500">Vencimiento</p>
-                  <p className="text-sm font-medium">10/07</p>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <p className="text-xs text-gray-500">Coeficiente</p>
-                  <p className="text-sm font-medium">2.8%</p>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <p className="text-xs text-gray-500">Canal</p>
-                  <p className="text-sm font-medium">SPI</p>
-                </div>
+              <div className="relative mt-5 grid grid-cols-3 gap-2 text-center">
+                {[
+                  { l: "Vencimiento", v: "10/07" },
+                  { l: "Coeficiente", v: "2.8%" },
+                  { l: "Canal", v: "SPI" },
+                ].map((x) => (
+                  <div key={x.l} className="rounded-xl bg-white/10 border border-white/15 backdrop-blur px-2 py-2">
+                    <p className="text-[10.5px] text-blue-100 uppercase tracking-wider">{x.l}</p>
+                    <p className="text-[13px] font-semibold mt-0.5">{x.v}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Desglose por centro de costo */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <p className="text-xs font-medium text-gray-700 mb-3">Desglose de tu gasto común</p>
-              <div className="space-y-2">
+            {/* Desglose */}
+            <div className="rounded-2xl bg-white border border-ink-200 p-5 shadow-elev-1">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-sm font-bold text-ink-900">Desglose de tu gasto común</p>
+                <span className="text-[10.5px] text-ink-500 uppercase tracking-wider font-semibold">Julio 2026</span>
+              </div>
+              <div className="space-y-2.5">
                 {[
-                  { name: "Servicios contratados", amount: 238000, color: "bg-purple-400" },
-                  { name: "Remuneraciones", amount: 225400, color: "bg-blue-400" },
-                  { name: "Gastos Básicos", amount: 134400, color: "bg-yellow-400" },
-                  { name: "Mantención", amount: 70000, color: "bg-orange-400" },
-                  { name: "Administración", amount: 56000, color: "bg-gray-400" },
-                  { name: "Fondo de reserva", amount: 46200, color: "bg-green-400" },
-                  { name: "Seguros", amount: 42000, color: "bg-red-400" },
+                  { name: "Servicios contratados", amount: 238000, color: "bg-violet-500" },
+                  { name: "Remuneraciones", amount: 225400, color: "bg-blue-500" },
+                  { name: "Gastos básicos", amount: 134400, color: "bg-amber-500" },
+                  { name: "Mantención", amount: 70000, color: "bg-orange-500" },
+                  { name: "Administración", amount: 56000, color: "bg-slate-500" },
+                  { name: "Fondo de reserva", amount: 46200, color: "bg-emerald-500" },
+                  { name: "Seguros", amount: 42000, color: "bg-rose-500" },
                 ].map(item => (
-                  <div key={item.name} className="flex items-center gap-2">
+                  <div key={item.name} className="flex items-center gap-2.5">
                     <span className={`w-2.5 h-2.5 rounded-full ${item.color}`}></span>
-                    <span className="text-xs text-gray-600 flex-1">{item.name}</span>
-                    <span className="text-xs font-medium text-gray-900">{formatGuaranies(item.amount)}</span>
+                    <span className="text-[13px] text-ink-700 flex-1">{item.name}</span>
+                    <span className="text-[13px] font-semibold text-ink-900">{formatGuaranies(item.amount)}</span>
                   </div>
                 ))}
               </div>
@@ -135,44 +149,44 @@ export function ResidenteDashboard({ user, onLogout }: Props) {
 
             {/* Votaciones pendientes */}
             {votacionesActivas.filter(v => !myVotes[v.id]).length > 0 && (
-              <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
-                <p className="text-sm font-medium text-purple-800 mb-2">🗳️ Tienes votaciones pendientes</p>
+              <div className="rounded-2xl bg-gradient-to-br from-violet-50 to-fuchsia-50 border border-violet-200 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg">🗳️</span>
+                  <p className="text-sm font-bold text-violet-900">Tienes votaciones pendientes</p>
+                </div>
                 {votacionesActivas.filter(v => !myVotes[v.id]).map(v => (
-                  <button key={v.id} onClick={() => setActiveTab("votaciones")} className="w-full text-left flex items-center justify-between py-2">
-                    <span className="text-sm text-purple-700">{v.titulo}</span>
-                    <span className="text-xs px-2 py-1 bg-purple-600 text-white rounded">Votar →</span>
+                  <button key={v.id} onClick={() => setActiveTab("votaciones")} className="w-full text-left flex items-center justify-between py-2 group">
+                    <span className="text-[13px] text-violet-800">{v.titulo}</span>
+                    <span className="text-[11px] px-2.5 py-1 bg-violet-600 text-white rounded-lg font-semibold group-hover:bg-violet-700">Votar →</span>
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Noticias de la comunidad */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <p className="text-xs font-medium text-gray-700 mb-3">📢 Noticias de la comunidad</p>
+            {/* Noticias */}
+            <div className="rounded-2xl bg-white border border-ink-200 p-5 shadow-elev-1">
+              <p className="text-sm font-bold text-ink-900 mb-3">📢 Noticias de la comunidad</p>
               <div className="space-y-3">
-                <div className="border-l-3 border-blue-500 pl-3">
-                  <p className="text-sm text-gray-900">Asamblea ordinaria programada</p>
-                  <p className="text-xs text-gray-500">25/07/2026 a las 19:00 en el SUM</p>
-                </div>
-                <div className="border-l-3 border-yellow-500 pl-3">
-                  <p className="text-sm text-gray-900">Mantención ascensor 1</p>
-                  <p className="text-xs text-gray-500">15/07/2026 de 8:00 a 12:00 — usar ascensor 2</p>
-                </div>
-                <div className="border-l-3 border-green-500 pl-3">
-                  <p className="text-sm text-gray-900">Resultado votación: Horario piscina extendido</p>
-                  <p className="text-xs text-gray-500">Aprobado: 6:00 a 22:00 desde verano 2026</p>
-                </div>
+                {[
+                  { c: "border-blue-500", t: "Asamblea ordinaria programada", d: "25/07/2026 a las 19:00 en el SUM" },
+                  { c: "border-amber-500", t: "Mantención ascensor 1", d: "15/07/2026 de 8:00 a 12:00 — usar ascensor 2" },
+                  { c: "border-emerald-500", t: "Votación aprobada: horario piscina extendido", d: "6:00 a 22:00 desde verano 2026" },
+                ].map((n, i) => (
+                  <div key={i} className={`border-l-2 ${n.c} pl-3`}>
+                    <p className="text-[13px] font-medium text-ink-900">{n.t}</p>
+                    <p className="text-[11.5px] text-ink-500 mt-0.5">{n.d}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Reclamo activo */}
             {misReclamos.filter(r => r.estado !== "resuelto").length > 0 && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                <p className="text-xs font-medium text-yellow-800 mb-2">🔧 Tus reclamos activos</p>
+              <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4">
+                <p className="text-[12px] font-bold text-amber-900 mb-2">🔧 Tus reclamos activos</p>
                 {misReclamos.filter(r => r.estado !== "resuelto").map(r => (
-                  <div key={r.id} className="flex items-center justify-between py-1">
-                    <span className="text-sm text-yellow-700">{r.titulo}</span>
-                    <span className="text-xs bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded">{r.estado.replace("_", " ")}</span>
+                  <div key={r.id} className="flex items-center justify-between py-1.5">
+                    <span className="text-[13px] text-amber-900">{r.titulo}</span>
+                    <span className="pill bg-white text-amber-700 border border-amber-200">{r.estado.replace("_", " ")}</span>
                   </div>
                 ))}
               </div>
@@ -180,41 +194,56 @@ export function ResidenteDashboard({ user, onLogout }: Props) {
           </div>
         )}
 
-        {/* ============ PAGAR ============ */}
+        {/* PAGAR */}
         {activeTab === "pagos" && (
-          <div className="space-y-4 pt-2">
-            <h2 className="text-lg font-bold text-gray-900">Realizar Pago</h2>
-            <div className="bg-white rounded-xl border border-gray-200 p-5 text-center">
-              <p className="text-xs text-gray-500">Gasto común — Julio 2026</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">₲ 812.000</p>
-              <span className="text-xs px-3 py-1 rounded-full font-medium bg-green-100 text-green-800 mt-2 inline-block">YA PAGADO</span>
+          <div className="space-y-5">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-700">Pagar</p>
+              <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Realizar pago</h1>
             </div>
 
-            <p className="text-sm font-medium text-gray-700">Selecciona método de pago:</p>
-            <div className="space-y-3">
+            <div className="rounded-2xl bg-white border border-ink-200 p-6 text-center shadow-elev-1">
+              <p className="text-[11px] uppercase tracking-widest text-ink-500 font-semibold">Gasto común · Julio 2026</p>
+              <p className="text-4xl font-extrabold text-ink-900 mt-2">₲ 812.000</p>
+              <span className="pill bg-emerald-50 text-emerald-700 border border-emerald-200 mt-3">YA PAGADO ✓</span>
+            </div>
+
+            <p className="text-[13px] font-semibold text-ink-700 mt-2">Selecciona método de pago</p>
+            <div className="space-y-2.5">
               {[
-                { id: "spi", icon: "🏦", name: "Transferencia SPI", desc: "Instantánea via QR", tag: "Recomendado" },
-                { id: "tigo", icon: "📱", name: "Tigo Money", desc: "Paga desde tu billetera Tigo" },
-                { id: "personal", icon: "📲", name: "Personal Pay", desc: "Paga desde tu billetera Personal" },
-                { id: "transfer", icon: "🏧", name: "Transferencia bancaria", desc: "Con código de referencia" },
+                { id: "spi", icon: "🏦", name: "Transferencia SPI", desc: "Instantánea via QR", tag: "Recomendado", accent: "hover:border-blue-400 hover:bg-blue-50/60" },
+                { id: "tigo", icon: "📱", name: "Tigo Money", desc: "Paga desde tu billetera Tigo", accent: "hover:border-blue-400 hover:bg-blue-50/60" },
+                { id: "personal", icon: "📲", name: "Personal Pay", desc: "Paga desde tu billetera Personal", accent: "hover:border-blue-400 hover:bg-blue-50/60" },
+                { id: "transfer", icon: "🏧", name: "Transferencia bancaria", desc: "Con código de referencia", accent: "hover:border-blue-400 hover:bg-blue-50/60" },
               ].map(m => (
-                <button key={m.id} onClick={() => setShowPayModal(true)} className="w-full flex items-center gap-4 p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all text-left">
-                  <span className="text-2xl">{m.icon}</span>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{m.name}</p>
-                    <p className="text-xs text-gray-500">{m.desc}</p>
+                <button
+                  key={m.id}
+                  onClick={() => setShowPayModal(true)}
+                  data-testid={`pay-method-${m.id}`}
+                  className={`w-full group flex items-center gap-4 p-4 bg-white border border-ink-200 rounded-2xl transition-all text-left ${m.accent}`}
+                >
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100 flex items-center justify-center text-xl">
+                    {m.icon}
                   </div>
-                  {m.tag && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">{m.tag}</span>}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-semibold text-ink-900">{m.name}</p>
+                    <p className="text-[12px] text-ink-500 mt-0.5">{m.desc}</p>
+                  </div>
+                  {m.tag && <span className="pill bg-emerald-50 text-emerald-700 border border-emerald-200">{m.tag}</span>}
+                  <span className="text-ink-400 group-hover:translate-x-0.5 transition-transform">→</span>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* ============ HISTORIAL ============ */}
+        {/* HISTORIAL */}
         {activeTab === "historial" && (
-          <div className="space-y-4 pt-2">
-            <h2 className="text-lg font-bold text-gray-900">Historial de Pagos</h2>
+          <div className="space-y-5">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-700">Historial</p>
+              <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Historial de pagos</h1>
+            </div>
             <div className="space-y-2">
               {[
                 { periodo: "Julio 2026", monto: 812000, fecha: "08/07/2026", canal: "SPI", estado: "pagado" },
@@ -223,14 +252,19 @@ export function ResidenteDashboard({ user, onLogout }: Props) {
                 { periodo: "Abril 2026", monto: 798000, fecha: "03/04/2026", canal: "Personal Pay", estado: "pagado" },
                 { periodo: "Marzo 2026", monto: 798000, fecha: "10/03/2026", canal: "Transferencia", estado: "pagado" },
               ].map((p, i) => (
-                <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{p.periodo}</p>
-                    <p className="text-xs text-gray-500">{p.fecha} — {p.canal}</p>
+                <div key={i} className="rounded-2xl bg-white border border-ink-200 p-4 flex items-center justify-between hover:shadow-elev-2 transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div>
+                      <p className="text-[13.5px] font-semibold text-ink-900">{p.periodo}</p>
+                      <p className="text-[11.5px] text-ink-500">{p.fecha} · {p.canal}</p>
+                    </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-gray-900">{formatGuaranies(p.monto)}</p>
-                    <button className="text-xs text-blue-600 hover:underline mt-1">📄 PDF</button>
+                    <p className="text-[14px] font-bold text-ink-900">{formatGuaranies(p.monto)}</p>
+                    <button className="text-[11.5px] text-blue-600 hover:text-blue-800 hover:underline mt-0.5 font-medium">📄 PDF</button>
                   </div>
                 </div>
               ))}
@@ -238,49 +272,53 @@ export function ResidenteDashboard({ user, onLogout }: Props) {
           </div>
         )}
 
-        {/* ============ RECLAMOS ============ */}
+        {/* RECLAMOS */}
         {activeTab === "reclamos" && (
-          <div className="space-y-4 pt-2">
-            <h2 className="text-lg font-bold text-gray-900">Mis Reclamos</h2>
+          <div className="space-y-5">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-700">Reclamos</p>
+              <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Mis reclamos</h1>
+            </div>
 
             {showReclamoSuccess && (
-              <div className="bg-green-100 border border-green-300 rounded-xl p-3 text-sm text-green-800">
+              <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-3.5 text-[13px] text-emerald-800 font-medium">
                 ✓ Reclamo enviado correctamente. El administrador será notificado.
               </div>
             )}
 
-            {/* Formulario nuevo reclamo */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <p className="text-sm font-medium text-gray-900 mb-3">Nuevo reclamo</p>
+            <div className="rounded-2xl bg-white border border-ink-200 p-5 shadow-elev-1">
+              <p className="text-[13.5px] font-bold text-ink-900 mb-3">Nuevo reclamo</p>
               <div className="space-y-3">
-                <select value={newReclamo.categoria} onChange={e => setNewReclamo(p => ({...p, categoria: e.target.value}))} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                <select value={newReclamo.categoria} onChange={e => setNewReclamo(p => ({...p, categoria: e.target.value}))} className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-[13.5px] bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none">
                   <option>Mantención</option>
                   <option>Limpieza</option>
                   <option>Ruido</option>
                   <option>Seguridad</option>
                   <option>Otro</option>
                 </select>
-                <input type="text" value={newReclamo.titulo} onChange={e => setNewReclamo(p => ({...p, titulo: e.target.value}))} placeholder="Título del reclamo" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-                <textarea value={newReclamo.descripcion} onChange={e => setNewReclamo(p => ({...p, descripcion: e.target.value}))} rows={3} placeholder="Describe el problema..." className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-                <button onClick={handleNewReclamo} disabled={!newReclamo.titulo || !newReclamo.descripcion} className="w-full px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                <input type="text" value={newReclamo.titulo} onChange={e => setNewReclamo(p => ({...p, titulo: e.target.value}))} placeholder="Título del reclamo" data-testid="reclamo-titulo" className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-[13.5px] focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none" />
+                <textarea value={newReclamo.descripcion} onChange={e => setNewReclamo(p => ({...p, descripcion: e.target.value}))} rows={3} placeholder="Describe el problema..." data-testid="reclamo-descripcion" className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-[13.5px] focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none resize-none" />
+                <button
+                  onClick={handleNewReclamo}
+                  disabled={!newReclamo.titulo || !newReclamo.descripcion}
+                  data-testid="reclamo-submit"
+                  className="w-full px-4 py-2.5 bg-grad-brand text-white text-[13.5px] font-semibold rounded-xl hover:shadow-brand disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
                   Enviar reclamo
                 </button>
               </div>
             </div>
 
-            {/* Lista de reclamos */}
             <div className="space-y-2">
               {misReclamos.map(r => (
-                <div key={r.id} className="bg-white rounded-xl border border-gray-200 p-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{r.titulo}</p>
-                      <p className="text-xs text-gray-500 mt-1">{r.descripcion}</p>
-                      <p className="text-xs text-gray-400 mt-2">{r.fechaCreacion} — {r.categoria}</p>
+                <div key={r.id} className="rounded-2xl bg-white border border-ink-200 p-4 hover:shadow-elev-2 transition-shadow">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13.5px] font-semibold text-ink-900">{r.titulo}</p>
+                      <p className="text-[12.5px] text-ink-600 mt-1">{r.descripcion}</p>
+                      <p className="text-[11px] text-ink-400 mt-2 font-medium">{r.fechaCreacion} · {r.categoria}</p>
                     </div>
-                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${r.estado === "resuelto" ? "bg-green-100 text-green-800" : r.estado === "en_proceso" ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>
-                      {r.estado.replace("_", " ")}
-                    </span>
+                    <span className={`pill border ${estadoBadge(r.estado)}`}>{r.estado.replace("_", " ")}</span>
                   </div>
                 </div>
               ))}
@@ -288,60 +326,72 @@ export function ResidenteDashboard({ user, onLogout }: Props) {
           </div>
         )}
 
-        {/* ============ VOTACIONES ============ */}
+        {/* VOTACIONES */}
         {activeTab === "votaciones" && (
-          <div className="space-y-4 pt-2">
-            <h2 className="text-lg font-bold text-gray-900">Votaciones</h2>
+          <div className="space-y-5">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-700">Votaciones</p>
+              <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Votaciones activas</h1>
+            </div>
 
             {votacionesActivas.map(v => (
-              <div key={v.id} className="bg-white rounded-xl border border-green-200 p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-green-100 text-green-800">ACTIVA</span>
-                  <span className="text-xs text-gray-400">Cierra: {v.fechaCierre}</span>
+              <div key={v.id} className="rounded-2xl bg-white border border-ink-200 p-5 shadow-elev-1">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="pill bg-emerald-50 text-emerald-700 border border-emerald-200">ACTIVA</span>
+                  <span className="text-[11.5px] text-ink-400">Cierra: {v.fechaCierre}</span>
                 </div>
-                <h3 className="text-sm font-medium text-gray-900 mb-1">{v.titulo}</h3>
-                <p className="text-xs text-gray-600 mb-4">{v.descripcion}</p>
+                <h3 className="text-[15px] font-bold text-ink-900">{v.titulo}</h3>
+                <p className="text-[12.5px] text-ink-600 mt-1 mb-4">{v.descripcion}</p>
 
                 {myVotes[v.id] ? (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
-                    <p className="text-sm text-green-700 font-medium">✓ Voto registrado</p>
-                    <p className="text-xs text-green-600 mt-1">Gracias por participar</p>
+                  <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3.5 text-center">
+                    <p className="text-[13.5px] text-emerald-700 font-semibold">✓ Voto registrado</p>
+                    <p className="text-[11.5px] text-emerald-600 mt-0.5">Gracias por participar</p>
                   </div>
                 ) : (
                   <div className="space-y-2">
                     {v.opciones.map(op => (
-                      <button key={op.id} onClick={() => handleVote(v.id, op.id)} className="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors">
-                        <span className="text-sm text-gray-700">{op.texto}</span>
+                      <button
+                        key={op.id}
+                        onClick={() => handleVote(v.id, op.id)}
+                        data-testid={`vote-${v.id}-${op.id}`}
+                        className="w-full text-left p-3.5 border border-ink-200 rounded-xl hover:border-blue-400 hover:bg-blue-50/60 transition-colors"
+                      >
+                        <span className="text-[13.5px] text-ink-800 font-medium">{op.texto}</span>
                       </button>
                     ))}
                   </div>
                 )}
 
-                <div className="mt-3 pt-2 border-t border-gray-100">
-                  <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-green-500 rounded-full" style={{ width: `${(v.votosEmitidos / v.totalVotantes) * 100}%` }}></div>
+                <div className="mt-4 pt-3 border-t border-ink-100">
+                  <div className="w-full h-2 bg-ink-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all" style={{ width: `${(v.votosEmitidos / v.totalVotantes) * 100}%` }}></div>
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">Participación: {v.votosEmitidos}/{v.totalVotantes} ({((v.votosEmitidos / v.totalVotantes) * 100).toFixed(0)}%)</p>
+                  <p className="text-[11.5px] text-ink-500 mt-2">
+                    Participación: {v.votosEmitidos}/{v.totalVotantes} ({((v.votosEmitidos / v.totalVotantes) * 100).toFixed(0)}%)
+                  </p>
                 </div>
               </div>
             ))}
 
-            {/* Cerradas */}
-            <p className="text-sm font-medium text-gray-700 mt-4">Resultados anteriores</p>
+            <p className="text-[13px] font-bold text-ink-700 mt-4">Resultados anteriores</p>
             {votaciones.filter(v => v.estado === "cerrada").map(v => (
-              <div key={v.id} className="bg-white rounded-xl border border-gray-200 p-4">
-                <p className="text-sm font-medium text-gray-900">{v.titulo}</p>
-                <p className="text-xs text-green-700 font-medium mt-1">✓ {v.resultado}</p>
-                <p className="text-xs text-gray-400 mt-1">{((v.votosEmitidos / v.totalVotantes) * 100).toFixed(0)}% participación</p>
+              <div key={v.id} className="rounded-2xl bg-white border border-ink-200 p-4">
+                <p className="text-[13.5px] font-semibold text-ink-900">{v.titulo}</p>
+                <p className="text-[12.5px] text-emerald-700 font-semibold mt-1">✓ {v.resultado}</p>
+                <p className="text-[11px] text-ink-400 mt-1">{((v.votosEmitidos / v.totalVotantes) * 100).toFixed(0)}% participación</p>
               </div>
             ))}
           </div>
         )}
 
-        {/* ============ DOCUMENTOS ============ */}
+        {/* DOCUMENTOS */}
         {activeTab === "documentos" && (
-          <div className="space-y-4 pt-2">
-            <h2 className="text-lg font-bold text-gray-900">Documentos</h2>
+          <div className="space-y-5">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-700">Documentos</p>
+              <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Documentos</h1>
+            </div>
             <div className="space-y-2">
               {[
                 { name: "Reglamento interno Torre Ñandutí", size: "2.4 MB", date: "15/01/2026" },
@@ -350,62 +400,83 @@ export function ResidenteDashboard({ user, onLogout }: Props) {
                 { name: "Liquidación Julio 2026 — Depto 4A", size: "0.3 MB", date: "01/07/2026" },
                 { name: "Liquidación Junio 2026 — Depto 4A", size: "0.3 MB", date: "01/06/2026" },
               ].map((doc, i) => (
-                <button key={i} className="w-full bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3 hover:bg-gray-50 text-left transition-colors">
-                  <span className="text-lg">📄</span>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{doc.name}</p>
-                    <p className="text-xs text-gray-400">{doc.size} — {doc.date}</p>
+                <button key={i} className="w-full rounded-2xl bg-white border border-ink-200 p-4 flex items-center gap-3.5 hover:shadow-elev-2 text-left transition-all group">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100 flex items-center justify-center text-lg">📄</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13.5px] font-semibold text-ink-900 truncate">{doc.name}</p>
+                    <p className="text-[11px] text-ink-400 mt-0.5 font-medium">{doc.size} · {doc.date}</p>
                   </div>
-                  <span className="text-xs text-blue-600">Descargar</span>
+                  <span className="text-[12px] text-blue-600 font-semibold group-hover:translate-x-0.5 transition-transform">Descargar →</span>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        {/* ============ PERFIL ============ */}
+        {/* PERFIL */}
         {activeTab === "perfil" && (
-          <div className="space-y-4 pt-2">
-            <h2 className="text-lg font-bold text-gray-900">Mi Perfil</h2>
-            <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
-              <div><label className="text-xs text-gray-500">Nombre</label><input type="text" defaultValue={user.nombre} className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
-              <div><label className="text-xs text-gray-500">Email</label><input type="email" defaultValue={user.email} className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
-              <div><label className="text-xs text-gray-500">Teléfono</label><input type="text" defaultValue="+595 981 234567" className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" /></div>
-              <div><label className="text-xs text-gray-500">Unidad</label><input type="text" defaultValue="4A — Piso 4 — 85m²" disabled className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50" /></div>
-              <button className="w-full px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Guardar cambios</button>
+          <div className="space-y-5">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-700">Perfil</p>
+              <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Mi perfil</h1>
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <p className="text-sm font-medium text-gray-900 mb-3">Seguridad</p>
-              <button className="w-full px-4 py-2 border border-gray-300 text-sm rounded-lg hover:bg-gray-50 mb-2">Cambiar contraseña</button>
-              <button className="w-full px-4 py-2 border border-gray-300 text-sm rounded-lg hover:bg-gray-50">Activar autenticación 2FA</button>
+            <div className="rounded-2xl bg-white border border-ink-200 p-6 space-y-4 shadow-elev-1">
+              {[
+                { l: "Nombre", v: user.nombre, type: "text" },
+                { l: "Email", v: user.email, type: "email" },
+                { l: "Teléfono", v: "+595 981 234567", type: "text" },
+                { l: "Unidad", v: "4A — Piso 4 — 85m²", type: "text", disabled: true },
+              ].map((f) => (
+                <div key={f.l}>
+                  <label className="text-[11px] font-semibold text-ink-500 uppercase tracking-wider">{f.l}</label>
+                  <input
+                    type={f.type}
+                    defaultValue={f.v}
+                    disabled={f.disabled}
+                    className={`w-full mt-1.5 px-3.5 py-2.5 border border-ink-200 rounded-xl text-[13.5px] outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
+                      f.disabled ? "bg-ink-50 text-ink-500" : ""
+                    }`}
+                  />
+                </div>
+              ))}
+              <button className="w-full px-4 py-2.5 bg-grad-brand text-white text-[13.5px] font-semibold rounded-xl hover:shadow-brand transition-all">
+                Guardar cambios
+              </button>
+            </div>
+            <div className="rounded-2xl bg-white border border-ink-200 p-6 shadow-elev-1">
+              <p className="text-[13.5px] font-bold text-ink-900 mb-3">Seguridad</p>
+              <div className="space-y-2">
+                <button className="w-full px-4 py-2.5 border border-ink-200 text-[13.5px] font-medium text-ink-800 rounded-xl hover:bg-ink-50 transition-colors">Cambiar contraseña</button>
+                <button className="w-full px-4 py-2.5 border border-ink-200 text-[13.5px] font-medium text-ink-800 rounded-xl hover:bg-ink-50 transition-colors">Activar autenticación 2FA</button>
+              </div>
             </div>
           </div>
         )}
       </main>
 
-      {/* ============ MODAL PAGO ============ */}
+      {/* Modal pago */}
       {showPayModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Confirmar pago</h3>
-            <div className="bg-gray-100 rounded-xl p-4 mb-4 text-center">
-              <div className="w-32 h-32 bg-white border-2 border-gray-300 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <div className="grid grid-cols-4 gap-1">
-                  {Array.from({length: 16}).map((_, i) => (
-                    <div key={i} className="w-5 h-5 bg-gray-800 rounded-sm" />
+        <div className="fixed inset-0 bg-ink-950/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 anim-fade-in" data-testid="pay-modal">
+          <div className="rounded-3xl bg-white p-6 w-full max-w-sm shadow-elev-3 anim-scale-in">
+            <h3 className="text-lg font-bold text-ink-900 mb-4">Confirmar pago</h3>
+            <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100 p-4 mb-4 text-center">
+              <div className="w-36 h-36 bg-white border-2 border-ink-200 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-elev-1">
+                <div className="grid grid-cols-5 gap-1">
+                  {Array.from({length: 25}).map((_, i) => (
+                    <div key={i} className={`w-4 h-4 rounded-sm ${Math.random() > 0.4 ? "bg-ink-900" : "bg-transparent"}`} />
                   ))}
                 </div>
               </div>
-              <p className="text-xs text-gray-500">Código QR SPI</p>
+              <p className="text-[11px] text-ink-500 font-semibold uppercase tracking-widest">Código QR SPI</p>
             </div>
-            <div className="space-y-2 mb-4 text-sm">
-              <div className="flex justify-between"><span className="text-gray-500">Monto:</span><span className="font-bold">₲ 812.000</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">Beneficiario:</span><span>Torre Ñandutí</span></div>
-              <div className="flex justify-between"><span className="text-gray-500">Ref:</span><span className="font-mono text-xs">GC-NAN-4A-202607</span></div>
+            <div className="space-y-2 mb-4 text-[13px]">
+              <div className="flex justify-between"><span className="text-ink-500">Monto:</span><span className="font-bold text-ink-900">₲ 812.000</span></div>
+              <div className="flex justify-between"><span className="text-ink-500">Beneficiario:</span><span className="text-ink-900">Torre Ñandutí</span></div>
+              <div className="flex justify-between"><span className="text-ink-500">Ref:</span><span className="font-mono text-[11px] text-ink-900">GC-NAN-4A-202607</span></div>
             </div>
             <div className="flex gap-3">
-              <button onClick={() => setShowPayModal(false)} className="flex-1 px-4 py-2.5 border border-gray-300 text-sm rounded-lg hover:bg-gray-50">Cancelar</button>
-              <button onClick={() => handlePay("spi")} className="flex-1 px-4 py-2.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 font-medium">Confirmar ✓</button>
+              <button onClick={() => setShowPayModal(false)} className="flex-1 px-4 py-2.5 border border-ink-200 text-[13.5px] font-medium rounded-xl hover:bg-ink-50">Cancelar</button>
+              <button onClick={() => handlePay("spi")} data-testid="pay-confirm-btn" className="flex-1 px-4 py-2.5 bg-emerald-600 text-white text-[13.5px] font-semibold rounded-xl hover:bg-emerald-700 transition-colors">Confirmar ✓</button>
             </div>
           </div>
         </div>

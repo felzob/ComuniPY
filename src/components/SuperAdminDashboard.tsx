@@ -24,384 +24,313 @@ export function SuperAdminDashboard({ user, onLogout }: Props) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <HamburgerMenu
-        items={menuItems}
-        activeItem={activeTab}
-        onSelect={(id) => setActiveTab(id as SuperTab)}
-        title="ComuniPy"
-        subtitle="Backoffice — Plataforma"
-        userName={user.nombre}
-        userRole="Super Admin"
-        onLogout={onLogout}
-      />
+    <div className="min-h-screen bg-mesh-dark text-slate-100 relative" data-testid="superadmin-dashboard">
+      <div className="absolute inset-0 bg-grid-neon opacity-60 pointer-events-none" />
+      <div className="relative">
+        <HamburgerMenu
+          items={menuItems}
+          activeItem={activeTab}
+          onSelect={(id) => setActiveTab(id as SuperTab)}
+          title="ComuniPy"
+          subtitle="Backoffice · Plataforma"
+          userName={user.nombre}
+          userRole="Super Admin"
+          onLogout={onLogout}
+          variant="dark"
+        />
 
-      {/* Content */}
-      <main className="pt-20 px-4 pb-6 max-w-7xl mx-auto">
-        {activeTab === "overview" && (
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold text-white">Platform Overview</h2>
-            
-            {/* KPIs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                <p className="text-sm text-gray-400">Edificios activos</p>
-                <p className="text-3xl font-bold text-white">3</p>
-                <p className="text-xs text-green-400 mt-1">+1 este mes</p>
-              </div>
-              <div className="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                <p className="text-sm text-gray-400">Unidades totales</p>
-                <p className="text-3xl font-bold text-white">144</p>
-                <p className="text-xs text-gray-500 mt-1">48 + 32 + 64</p>
-              </div>
-              <div className="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                <p className="text-sm text-gray-400">MRR (Revenue mensual)</p>
-                <p className="text-3xl font-bold text-green-400">$247</p>
-                <p className="text-xs text-gray-500 mt-1">USD equivalente</p>
-              </div>
-              <div className="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                <p className="text-sm text-gray-400">Transacciones Julio</p>
-                <p className="text-3xl font-bold text-white">43</p>
-                <p className="text-xs text-green-400 mt-1">+18% vs. Junio</p>
-              </div>
-            </div>
-
-            {/* Revenue breakdown */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                <h3 className="text-sm font-medium text-gray-300 mb-3">Revenue por concepto</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Plan Profesional (2 edificios)</span>
-                    <span className="text-sm font-medium text-white">$138 USD</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Plan Empresa (1 edificio)</span>
-                    <span className="text-sm font-medium text-white">$79 USD</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Fee transaccional (43 txs)</span>
-                    <span className="text-sm font-medium text-white">$30 USD</span>
-                  </div>
-                  <div className="flex justify-between items-center border-t border-gray-600 pt-2">
-                    <span className="text-sm font-medium text-gray-300">Total MRR</span>
-                    <span className="text-sm font-bold text-green-400">$247 USD</span>
-                  </div>
-                </div>
+        <main className="pt-24 px-4 pb-10 max-w-7xl mx-auto anim-fade-up">
+          {activeTab === "overview" && (
+            <div className="space-y-6">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-cyan-300">Overview</p>
+                <h1 className="text-2xl font-extrabold text-white mt-1">Platform Overview</h1>
+                <p className="text-[13px] text-slate-400">Estado global de la plataforma ComuniPy</p>
               </div>
 
-              <div className="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                <h3 className="text-sm font-medium text-gray-300 mb-3">Estado del sistema</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">API Backend</span>
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Operativo</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { l: "Edificios activos", v: "3", d: "+1 este mes", tone: "text-white", accent: "text-emerald-400", glow: "shadow-neon-blue" },
+                  { l: "Unidades totales", v: "144", d: "48 + 32 + 64", tone: "text-white", accent: "text-slate-400" },
+                  { l: "MRR mensual", v: "$247", d: "USD equivalente", tone: "text-emerald-400", accent: "text-slate-400", glow: "shadow-neon-emerald" },
+                  { l: "Transacciones Julio", v: "43", d: "+18% vs. Junio", tone: "text-white", accent: "text-cyan-300", glow: "shadow-neon-cyan" },
+                ].map((k) => (
+                  <div key={k.l} className={`relative overflow-hidden rounded-2xl bg-ink-900/80 border border-white/10 p-5 backdrop-blur ${k.glow || ""}`}>
+                    <p className="text-[11px] uppercase tracking-widest font-semibold text-slate-400">{k.l}</p>
+                    <p className={`text-3xl font-extrabold mt-1 ${k.tone}`}>{k.v}</p>
+                    <p className={`text-[11px] mt-1 ${k.accent}`}>{k.d}</p>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Base de datos</span>
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Operativo</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">SPI Gateway</span>
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Conectado</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Tigo Money API</span>
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Conectado</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Personal Pay API</span>
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Conectado</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Amazon SES (emails)</span>
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Activo</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Uptime (30 días)</span>
-                    <span className="text-sm font-medium text-white">99.87%</span>
-                  </div>
-                </div>
+                ))}
               </div>
-            </div>
-          </div>
-        )}
 
-        {activeTab === "edificios" && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">Edificios en plataforma</h2>
-              <button className="px-4 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700">+ Onboarding nuevo edificio</button>
-            </div>
-            <div className="space-y-3">
-              {edificios.map(e => (
-                <div key={e.id} className="bg-gray-800 rounded-xl border border-gray-700 p-4 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-medium text-white">{e.nombre}</h3>
-                    <p className="text-xs text-gray-400">{e.direccion}, {e.ciudad}</p>
-                    <div className="flex gap-4 mt-2">
-                      <span className="text-xs text-gray-500">{e.unidades} unidades</span>
-                      <span className="text-xs text-gray-500">{e.pisos} pisos</span>
-                      <span className="text-xs text-gray-500">RUC: {e.ruc}</span>
-                      <span className="text-xs text-gray-500">{e.banco}</span>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="rounded-2xl bg-ink-900/70 border border-white/10 p-6 backdrop-blur">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-[14px] font-bold text-white">Revenue por concepto</h3>
+                    <span className="text-[10.5px] uppercase tracking-widest text-cyan-300 font-semibold">Julio 2026</span>
+                  </div>
+                  <div className="space-y-2.5">
+                    {[
+                      { l: "Plan Profesional (2 edificios)", v: "$138 USD" },
+                      { l: "Plan Empresa (1 edificio)", v: "$79 USD" },
+                      { l: "Fee transaccional (43 txs)", v: "$30 USD" },
+                    ].map((r) => (
+                      <div key={r.l} className="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0">
+                        <span className="text-[13px] text-slate-300">{r.l}</span>
+                        <span className="text-[13.5px] font-semibold text-white">{r.v}</span>
+                      </div>
+                    ))}
+                    <div className="flex justify-between items-center pt-3 mt-1 border-t border-white/10">
+                      <span className="text-[13px] font-bold text-slate-200">Total MRR</span>
+                      <span className="text-lg font-extrabold text-emerald-400">$247 USD</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-1 rounded-full">Activo</span>
-                    <button className="text-xs text-purple-400 hover:underline">Gestionar</button>
+                </div>
+
+                <div className="rounded-2xl bg-ink-900/70 border border-white/10 p-6 backdrop-blur">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-[14px] font-bold text-white">Estado del sistema</h3>
+                    <span className="pill bg-emerald-500/10 text-emerald-300 border border-emerald-400/20"><span className="dot-live"></span> Operativo</span>
+                  </div>
+                  <div className="space-y-2.5">
+                    {[
+                      ["API Backend", "Operativo", "emerald"],
+                      ["Base de datos", "Operativo", "emerald"],
+                      ["SPI Gateway", "Conectado", "emerald"],
+                      ["Tigo Money API", "Conectado", "emerald"],
+                      ["Personal Pay API", "Conectado", "emerald"],
+                      ["Amazon SES (emails)", "Activo", "emerald"],
+                      ["Uptime (30 días)", "99.87%", "cyan"],
+                    ].map(([label, val, color], i) => (
+                      <div key={i} className="flex justify-between items-center py-1">
+                        <span className="text-[13px] text-slate-300">{label}</span>
+                        {color === "emerald" ? (
+                          <span className="pill bg-emerald-500/10 text-emerald-300 border border-emerald-400/20">{val}</span>
+                        ) : (
+                          <span className="text-[13.5px] font-semibold text-white font-mono">{val}</span>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === "transacciones" && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-white">Transacciones de la plataforma</h2>
-            <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-gray-750 border-b border-gray-700">
-                  <tr>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">ID</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Edificio</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Unidad</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Monto</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Canal</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Fee</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Estado</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Fecha</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-gray-700">
-                    <td className="px-4 py-3 text-xs text-gray-400 font-mono">TXN-0043</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Torre Ñandutí</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">4B</td>
-                    <td className="px-4 py-3 text-sm text-white">{formatGuaranies(696000)}</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Tigo Money</td>
-                    <td className="px-4 py-3 text-sm text-green-400">{formatGuaranies(6960)}</td>
-                    <td className="px-4 py-3"><span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Completada</span></td>
-                    <td className="px-4 py-3 text-sm text-gray-400">10/07/2026</td>
-                  </tr>
-                  <tr className="border-b border-gray-700">
-                    <td className="px-4 py-3 text-xs text-gray-400 font-mono">TXN-0042</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Torre Ñandutí</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">6B</td>
-                    <td className="px-4 py-3 text-sm text-white">{formatGuaranies(696000)}</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">SPI</td>
-                    <td className="px-4 py-3 text-sm text-green-400">{formatGuaranies(6960)}</td>
-                    <td className="px-4 py-3"><span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Completada</span></td>
-                    <td className="px-4 py-3 text-sm text-gray-400">09/07/2026</td>
-                  </tr>
-                  <tr className="border-b border-gray-700">
-                    <td className="px-4 py-3 text-xs text-gray-400 font-mono">TXN-0041</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Torre Ñandutí</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">4A</td>
-                    <td className="px-4 py-3 text-sm text-white">{formatGuaranies(812000)}</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">SPI</td>
-                    <td className="px-4 py-3 text-sm text-green-400">{formatGuaranies(8120)}</td>
-                    <td className="px-4 py-3"><span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Completada</span></td>
-                    <td className="px-4 py-3 text-sm text-gray-400">08/07/2026</td>
-                  </tr>
-                  <tr className="border-b border-gray-700">
-                    <td className="px-4 py-3 text-xs text-gray-400 font-mono">TXN-0040</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Residencial Cerro Corá</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">3C</td>
-                    <td className="px-4 py-3 text-sm text-white">{formatGuaranies(520000)}</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Personal Pay</td>
-                    <td className="px-4 py-3 text-sm text-green-400">{formatGuaranies(5200)}</td>
-                    <td className="px-4 py-3"><span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Completada</span></td>
-                    <td className="px-4 py-3 text-sm text-gray-400">07/07/2026</td>
-                  </tr>
-                  <tr className="border-b border-gray-700">
-                    <td className="px-4 py-3 text-xs text-gray-400 font-mono">TXN-0039</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Torre Ñandutí</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">5B</td>
-                    <td className="px-4 py-3 text-sm text-white">{formatGuaranies(696000)}</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Personal Pay</td>
-                    <td className="px-4 py-3 text-sm text-green-400">{formatGuaranies(6960)}</td>
-                    <td className="px-4 py-3"><span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Completada</span></td>
-                    <td className="px-4 py-3 text-sm text-gray-400">05/07/2026</td>
-                  </tr>
-                </tbody>
-              </table>
+          {activeTab === "edificios" && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-cyan-300">Edificios</p>
+                  <h1 className="text-2xl font-extrabold text-white mt-1">Edificios en plataforma</h1>
+                </div>
+                <button className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-600 text-white text-[13px] font-semibold shadow-neon-cyan hover:brightness-110 transition-all">
+                  + Onboarding nuevo edificio
+                </button>
+              </div>
+              <div className="space-y-3">
+                {edificios.map(e => (
+                  <div key={e.id} className="rounded-2xl bg-ink-900/70 border border-white/10 p-5 backdrop-blur flex items-center justify-between flex-wrap gap-4 hover:border-cyan-500/30 transition-colors">
+                    <div>
+                      <h3 className="text-[14px] font-bold text-white">{e.nombre}</h3>
+                      <p className="text-[12px] text-slate-400 mt-0.5">{e.direccion}, {e.ciudad}</p>
+                      <div className="flex flex-wrap gap-3 mt-2 text-[11.5px] text-slate-400">
+                        <span>· {e.unidades} unidades</span>
+                        <span>· {e.pisos} pisos</span>
+                        <span>· RUC: <span className="font-mono">{e.ruc}</span></span>
+                        <span>· {e.banco}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="pill bg-emerald-500/10 text-emerald-300 border border-emerald-400/20">Activo</span>
+                      <button className="text-[12.5px] text-cyan-300 hover:text-cyan-200 font-semibold">Gestionar →</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === "clientes" && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-white">Clientes (Administradoras)</h2>
-            <div className="space-y-3">
-              <div className="bg-gray-800 rounded-xl border border-gray-700 p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-medium text-white">AdminPro SRL — María González</h3>
-                    <p className="text-xs text-gray-400">maria@adminpro.com.py | +595 21 345678</p>
-                    <div className="flex gap-4 mt-2">
-                      <span className="text-xs text-gray-500">3 edificios</span>
-                      <span className="text-xs text-gray-500">144 unidades</span>
-                      <span className="text-xs text-gray-500">Plan: Empresa</span>
-                      <span className="text-xs text-gray-500">Desde: 01/03/2026</span>
+          {activeTab === "transacciones" && (
+            <div className="space-y-6">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-cyan-300">Transacciones</p>
+                <h1 className="text-2xl font-extrabold text-white mt-1">Transacciones de la plataforma</h1>
+              </div>
+              <div className="rounded-2xl bg-ink-900/70 border border-white/10 overflow-hidden backdrop-blur">
+                <table className="w-full">
+                  <thead className="bg-white/[0.03] border-b border-white/10">
+                    <tr>
+                      {["ID", "Edificio", "Unidad", "Monto", "Canal", "Fee", "Estado", "Fecha"].map(h => (
+                        <th key={h} className="text-left px-4 py-3 text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { id: "TXN-0043", ed: "Torre Ñandutí", u: "4B", m: 696000, ch: "Tigo Money", f: 6960, dt: "10/07/2026" },
+                      { id: "TXN-0042", ed: "Torre Ñandutí", u: "6B", m: 696000, ch: "SPI", f: 6960, dt: "09/07/2026" },
+                      { id: "TXN-0041", ed: "Torre Ñandutí", u: "4A", m: 812000, ch: "SPI", f: 8120, dt: "08/07/2026" },
+                      { id: "TXN-0040", ed: "Residencial Cerro Corá", u: "3C", m: 520000, ch: "Personal Pay", f: 5200, dt: "07/07/2026" },
+                      { id: "TXN-0039", ed: "Torre Ñandutí", u: "5B", m: 696000, ch: "Personal Pay", f: 6960, dt: "05/07/2026" },
+                    ].map((t) => (
+                      <tr key={t.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors">
+                        <td className="px-4 py-3 text-[11.5px] text-cyan-300 font-mono">{t.id}</td>
+                        <td className="px-4 py-3 text-[13px] text-slate-200">{t.ed}</td>
+                        <td className="px-4 py-3 text-[13px] text-slate-300">{t.u}</td>
+                        <td className="px-4 py-3 text-[13px] text-white font-semibold">{formatGuaranies(t.m)}</td>
+                        <td className="px-4 py-3 text-[13px] text-slate-300">{t.ch}</td>
+                        <td className="px-4 py-3 text-[13px] text-emerald-400">{formatGuaranies(t.f)}</td>
+                        <td className="px-4 py-3"><span className="pill bg-emerald-500/10 text-emerald-300 border border-emerald-400/20">Completada</span></td>
+                        <td className="px-4 py-3 text-[12px] text-slate-500 font-mono">{t.dt}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "clientes" && (
+            <div className="space-y-6">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-cyan-300">Clientes</p>
+                <h1 className="text-2xl font-extrabold text-white mt-1">Clientes (Administradoras)</h1>
+              </div>
+              <div className="rounded-2xl bg-ink-900/70 border border-white/10 p-5 backdrop-blur">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center font-bold text-white shadow-neon-cyan">MG</div>
+                    <div>
+                      <h3 className="text-[14px] font-bold text-white">AdminPro SRL · María González</h3>
+                      <p className="text-[11.5px] text-slate-400">maria@adminpro.com.py · +595 21 345678</p>
+                      <div className="flex flex-wrap gap-3 mt-1 text-[11px] text-slate-500">
+                        <span>3 edificios</span><span>· 144 unidades</span><span>· Plan: Empresa</span><span>· Desde 01/03/2026</span>
+                      </div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-green-400">$247 USD/mes</p>
-                    <p className="text-xs text-gray-500">SaaS + fees</p>
+                    <p className="text-lg font-extrabold text-emerald-400">$247 USD/mes</p>
+                    <p className="text-[11px] text-slate-500">SaaS + fees</p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === "facturacion" && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-white">Facturación</h2>
-            <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-              <table className="w-full">
-                <thead className="border-b border-gray-700">
-                  <tr>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Factura</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Cliente</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Concepto</th>
-                    <th className="text-right px-4 py-3 text-xs font-medium text-gray-400 uppercase">Monto</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase">Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-gray-700">
-                    <td className="px-4 py-3 text-sm text-gray-300">FAC-2026-007</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">AdminPro SRL</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Plan Empresa Julio 2026 + Fees</td>
-                    <td className="px-4 py-3 text-sm text-right text-white">$247 USD</td>
-                    <td className="px-4 py-3"><span className="text-xs bg-yellow-900 text-yellow-300 px-2 py-0.5 rounded-full">Pendiente</span></td>
-                  </tr>
-                  <tr className="border-b border-gray-700">
-                    <td className="px-4 py-3 text-sm text-gray-300">FAC-2026-006</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">AdminPro SRL</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Plan Empresa Junio 2026 + Fees</td>
-                    <td className="px-4 py-3 text-sm text-right text-white">$231 USD</td>
-                    <td className="px-4 py-3"><span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Pagada</span></td>
-                  </tr>
-                  <tr className="border-b border-gray-700">
-                    <td className="px-4 py-3 text-sm text-gray-300">FAC-2026-005</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">AdminPro SRL</td>
-                    <td className="px-4 py-3 text-sm text-gray-300">Plan Empresa Mayo 2026 + Fees</td>
-                    <td className="px-4 py-3 text-sm text-right text-white">$219 USD</td>
-                    <td className="px-4 py-3"><span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Pagada</span></td>
-                  </tr>
-                </tbody>
-              </table>
+          {activeTab === "facturacion" && (
+            <div className="space-y-6">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-cyan-300">Facturación</p>
+                <h1 className="text-2xl font-extrabold text-white mt-1">Facturación</h1>
+              </div>
+              <div className="rounded-2xl bg-ink-900/70 border border-white/10 overflow-hidden backdrop-blur">
+                <table className="w-full">
+                  <thead className="border-b border-white/10">
+                    <tr>
+                      {["Factura", "Cliente", "Concepto", "Monto", "Estado"].map((h, i) => (
+                        <th key={h} className={`text-${i === 3 ? "right" : "left"} px-4 py-3 text-[10.5px] font-bold text-slate-400 uppercase tracking-wider`}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { f: "FAC-2026-007", c: "AdminPro SRL", con: "Plan Empresa Julio 2026 + Fees", m: "$247 USD", s: "Pendiente", tone: "amber" },
+                      { f: "FAC-2026-006", c: "AdminPro SRL", con: "Plan Empresa Junio 2026 + Fees", m: "$231 USD", s: "Pagada", tone: "emerald" },
+                      { f: "FAC-2026-005", c: "AdminPro SRL", con: "Plan Empresa Mayo 2026 + Fees", m: "$219 USD", s: "Pagada", tone: "emerald" },
+                    ].map((r) => (
+                      <tr key={r.f} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
+                        <td className="px-4 py-3 text-[12.5px] text-slate-200 font-mono">{r.f}</td>
+                        <td className="px-4 py-3 text-[13px] text-slate-200">{r.c}</td>
+                        <td className="px-4 py-3 text-[13px] text-slate-300">{r.con}</td>
+                        <td className="px-4 py-3 text-[13px] text-right text-white font-semibold">{r.m}</td>
+                        <td className="px-4 py-3">
+                          <span className={`pill ${r.tone === "amber" ? "bg-amber-500/10 text-amber-300 border border-amber-400/20" : "bg-emerald-500/10 text-emerald-300 border border-emerald-400/20"}`}>{r.s}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === "sistema" && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-white">Configuración del Sistema</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Integraciones */}
-              <div className="bg-gray-800 rounded-xl border border-gray-700 p-5">
-                <h3 className="text-sm font-medium text-gray-300 mb-4">Integraciones de pago</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">🏦</span>
-                      <span className="text-sm text-gray-300">SPI (Banco Central PY)</span>
-                    </div>
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Producción</span>
+          {activeTab === "sistema" && (
+            <div className="space-y-6">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-cyan-300">Sistema</p>
+                <h1 className="text-2xl font-extrabold text-white mt-1">Configuración del sistema</h1>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="rounded-2xl bg-ink-900/70 border border-white/10 p-6 backdrop-blur">
+                  <h3 className="text-[14px] font-bold text-white mb-4">Integraciones de pago</h3>
+                  <div className="space-y-3">
+                    {[
+                      { icon: "🏦", n: "SPI (Banco Central PY)", st: "Producción", tone: "emerald" },
+                      { icon: "📱", n: "Tigo Money API v2", st: "Producción", tone: "emerald" },
+                      { icon: "📲", n: "Personal Pay API", st: "Producción", tone: "emerald" },
+                      { icon: "📧", n: "Amazon SES (us-east-1)", st: "Activo", tone: "emerald" },
+                      { icon: "💳", n: "Bancard (tarjetas)", st: "Pendiente", tone: "slate" },
+                    ].map((it) => (
+                      <div key={it.n} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <span className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-base">{it.icon}</span>
+                          <span className="text-[13px] text-slate-200">{it.n}</span>
+                        </div>
+                        <span className={`pill ${
+                          it.tone === "emerald"
+                            ? "bg-emerald-500/10 text-emerald-300 border border-emerald-400/20"
+                            : "bg-slate-500/10 text-slate-400 border border-slate-500/20"
+                        }`}>{it.st}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">📱</span>
-                      <span className="text-sm text-gray-300">Tigo Money API v2</span>
+                </div>
+
+                <div className="rounded-2xl bg-ink-900/70 border border-white/10 p-6 backdrop-blur">
+                  <h3 className="text-[14px] font-bold text-white mb-4">Infraestructura AWS <span className="text-[11px] text-slate-500 font-normal">us-east-1</span></h3>
+                  <div className="space-y-2.5 text-[13px]">
+                    {[
+                      ["Backend (ECS Fargate)", "2 tasks · 0.5 vCPU"],
+                      ["Base de datos (RDS PostgreSQL)", "db.t3.micro · 20GB"],
+                      ["Cache (ElastiCache Redis)", "cache.t3.micro"],
+                      ["Storage (S3)", "2.3 GB usados"],
+                      ["CDN (CloudFront)", "12 GB/mes transfer"],
+                    ].map(([l, v]) => (
+                      <div key={l} className="flex justify-between py-1 border-b border-white/5 last:border-0">
+                        <span className="text-slate-400">{l}</span>
+                        <span className="text-slate-200 font-mono text-[12px]">{v}</span>
+                      </div>
+                    ))}
+                    <div className="flex justify-between pt-3 mt-1 border-t border-white/10">
+                      <span className="text-slate-200 font-semibold">Costo mensual AWS</span>
+                      <span className="text-white font-extrabold">~$118 USD</span>
                     </div>
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Producción</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">📲</span>
-                      <span className="text-sm text-gray-300">Personal Pay API</span>
-                    </div>
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Producción</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">📧</span>
-                      <span className="text-sm text-gray-300">Amazon SES (us-east-1)</span>
-                    </div>
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full">Activo</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">💳</span>
-                      <span className="text-sm text-gray-300">Bancard (tarjetas)</span>
-                    </div>
-                    <span className="text-xs bg-gray-700 text-gray-400 px-2 py-0.5 rounded-full">Pendiente</span>
                   </div>
                 </div>
               </div>
 
-              {/* Infraestructura */}
-              <div className="bg-gray-800 rounded-xl border border-gray-700 p-5">
-                <h3 className="text-sm font-medium text-gray-300 mb-4">Infraestructura AWS (us-east-1)</h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Backend (ECS Fargate)</span>
-                    <span className="text-gray-300">2 tasks, 0.5 vCPU</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Base de datos (RDS PostgreSQL)</span>
-                    <span className="text-gray-300">db.t3.micro, 20GB</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Cache (ElastiCache Redis)</span>
-                    <span className="text-gray-300">cache.t3.micro</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Storage (S3)</span>
-                    <span className="text-gray-300">2.3 GB usados</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">CDN (CloudFront)</span>
-                    <span className="text-gray-300">12 GB/mes transfer</span>
-                  </div>
-                  <div className="flex justify-between border-t border-gray-700 pt-2">
-                    <span className="text-gray-300 font-medium">Costo mensual AWS</span>
-                    <span className="text-white font-medium">~$118 USD</span>
-                  </div>
+              <div className="rounded-2xl bg-ink-900/70 border border-white/10 p-6 backdrop-blur">
+                <h3 className="text-[14px] font-bold text-white mb-4">Estadísticas de email · Julio 2026</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { n: "342", l: "Enviados", tone: "text-white" },
+                    { n: "98.5%", l: "Entregados", tone: "text-emerald-400" },
+                    { n: "67.2%", l: "Abiertos", tone: "text-cyan-300" },
+                    { n: "0.3%", l: "Bounce", tone: "text-rose-400" },
+                  ].map((k) => (
+                    <div key={k.l} className="text-center rounded-xl border border-white/10 bg-white/[0.02] p-4">
+                      <p className={`text-3xl font-extrabold ${k.tone}`}>{k.n}</p>
+                      <p className="text-[11px] uppercase tracking-widest text-slate-500 mt-1 font-semibold">{k.l}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-
-            {/* Emails stats */}
-            <div className="bg-gray-800 rounded-xl border border-gray-700 p-5">
-              <h3 className="text-sm font-medium text-gray-300 mb-4">Estadísticas de email (Julio 2026)</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-white">342</p>
-                  <p className="text-xs text-gray-400">Enviados</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-green-400">98.5%</p>
-                  <p className="text-xs text-gray-400">Entregados</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-blue-400">67.2%</p>
-                  <p className="text-xs text-gray-400">Abiertos</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-red-400">0.3%</p>
-                  <p className="text-xs text-gray-400">Bounce</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

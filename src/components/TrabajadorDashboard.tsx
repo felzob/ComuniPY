@@ -14,7 +14,7 @@ interface Props {
 export function TrabajadorDashboard({ user, onLogout }: Props) {
   const [activeTab, setActiveTab] = useState<TrabajadorTab>("inicio");
 
-  const misDatos = trabajadores[0]; // Miguel Paredes
+  const misDatos = trabajadores[0];
   const misTurnos = turnos.filter(t => t.trabajadorId === "t1");
   const misLiquidaciones = liquidacionesSueldo.filter(l => l.trabajadorId === "t1");
   const miContrato = contratos.find(c => c.trabajadorId === "t1")!;
@@ -28,7 +28,7 @@ export function TrabajadorDashboard({ user, onLogout }: Props) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50/50" data-testid="trabajador-dashboard">
       <HamburgerMenu
         items={menuItems}
         activeItem={activeTab}
@@ -40,60 +40,64 @@ export function TrabajadorDashboard({ user, onLogout }: Props) {
         onLogout={onLogout}
       />
 
-      {/* Content */}
-      <main className="pt-20 px-4 pb-6 max-w-4xl mx-auto">
-
+      <main className="pt-24 px-4 pb-10 max-w-5xl mx-auto anim-fade-up">
         {activeTab === "inicio" && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-gray-900">Mi Perfil</h2>
-            
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center">
-                  <span className="text-amber-700 text-xl font-bold">MP</span>
+          <div className="space-y-6">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-700">Personal</p>
+              <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Mi perfil</h1>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border border-ink-200 bg-white p-6 shadow-elev-1">
+              <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-amber-100/40 blur-3xl" />
+              <div className="relative flex items-center gap-4 mb-5">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-white font-extrabold text-2xl shadow-brand">
+                  MP
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">{misDatos.nombre}</h3>
-                  <p className="text-sm text-amber-600">{misDatos.cargo}</p>
-                  <p className="text-xs text-gray-500">Torre Ñandutí — Desde {misDatos.fechaIngreso}</p>
+                  <h3 className="text-xl font-bold text-ink-900">{misDatos.nombre}</h3>
+                  <p className="text-sm font-semibold text-amber-700">{misDatos.cargo}</p>
+                  <p className="text-[11.5px] text-ink-500 mt-0.5">Torre Ñandutí · desde {misDatos.fechaIngreso}</p>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <div><span className="text-xs text-gray-500">Cédula:</span><p className="text-sm text-gray-900">{misDatos.cedula}</p></div>
-                  <div><span className="text-xs text-gray-500">Teléfono:</span><p className="text-sm text-gray-900">{misDatos.telefono}</p></div>
-                  <div><span className="text-xs text-gray-500">Email:</span><p className="text-sm text-gray-900">{misDatos.email}</p></div>
-                </div>
-                <div className="space-y-2">
-                  <div><span className="text-xs text-gray-500">Horario:</span><p className="text-sm text-gray-900">{misDatos.horario}</p></div>
-                  <div><span className="text-xs text-gray-500">Tipo contrato:</span><p className="text-sm text-gray-900 capitalize">{misDatos.tipoContrato.replace("_", " ")}</p></div>
-                  <div><span className="text-xs text-gray-500">IPS:</span><p className="text-sm text-green-600 font-medium">Activo ✓</p></div>
-                </div>
+              <div className="relative grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
+                {[
+                  { l: "Cédula", v: misDatos.cedula },
+                  { l: "Horario", v: misDatos.horario },
+                  { l: "Teléfono", v: misDatos.telefono },
+                  { l: "Tipo contrato", v: misDatos.tipoContrato.replace("_", " "), cap: true },
+                  { l: "Email", v: misDatos.email },
+                  { l: "IPS", v: "Activo ✓", tone: "text-emerald-600 font-semibold" },
+                ].map((f) => (
+                  <div key={f.l}>
+                    <p className="text-[10.5px] uppercase tracking-widest font-semibold text-ink-500">{f.l}</p>
+                    <p className={`text-[13px] mt-0.5 ${f.cap ? "capitalize " : ""}${f.tone || "text-ink-900"}`}>{f.v}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Resumen rápido */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white p-4 rounded-xl border border-gray-200">
-                <p className="text-xs text-gray-500">Próximo turno</p>
-                <p className="text-sm font-medium text-gray-900">20/07/2026 — 06:00</p>
-                <p className="text-xs text-gray-400">Regular</p>
-              </div>
-              <div className="bg-white p-4 rounded-xl border border-gray-200">
-                <p className="text-xs text-gray-500">Vacaciones disponibles</p>
-                <p className="text-lg font-bold text-blue-600">7 días</p>
-                <p className="text-xs text-gray-400">de 12 totales</p>
-              </div>
-              <div className="bg-white p-4 rounded-xl border border-gray-200">
-                <p className="text-xs text-gray-500">Liquidación pendiente</p>
-                <p className="text-sm font-bold text-green-600">{formatGuaranies(2802800)}</p>
-                <p className="text-xs text-gray-400">Julio 2026</p>
-              </div>
+              {[
+                { l: "Próximo turno", v: "20/07 · 06:00", d: "Regular", icon: "📅", accent: "border-blue-100 bg-blue-50/50" },
+                { l: "Vacaciones disponibles", v: "7 días", d: "de 12 totales", icon: "🏖️", accent: "border-cyan-100 bg-cyan-50/50", tone: "text-cyan-700" },
+                { l: "Liquidación pendiente", v: formatGuaranies(2802800), d: "Julio 2026", icon: "💵", accent: "border-emerald-100 bg-emerald-50/50", tone: "text-emerald-700" },
+              ].map((k) => (
+                <div key={k.l} className={`rounded-2xl border ${k.accent} p-5`}>
+                  <div className="flex items-start justify-between">
+                    <p className="text-[11px] uppercase tracking-widest font-semibold text-ink-500">{k.l}</p>
+                    <span className="text-lg">{k.icon}</span>
+                  </div>
+                  <p className={`text-xl font-extrabold mt-2 ${k.tone || "text-ink-900"}`}>{k.v}</p>
+                  <p className="text-[11.5px] text-ink-500 mt-1">{k.d}</p>
+                </div>
+              ))}
             </div>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-              <h3 className="text-sm font-medium text-amber-800 mb-2">📋 Recordatorios</h3>
-              <ul className="text-sm text-amber-700 space-y-1">
+            <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4">
+              <p className="text-[13px] font-bold text-amber-900 mb-2">📋 Recordatorios</p>
+              <ul className="text-[12.5px] text-amber-800 space-y-1">
                 <li>• Renovación examen médico IPS: vence 15/09/2026</li>
                 <li>• Entrega de uniforme nuevo programada para 01/08/2026</li>
               </ul>
@@ -102,25 +106,25 @@ export function TrabajadorDashboard({ user, onLogout }: Props) {
         )}
 
         {activeTab === "turnos" && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Mis Turnos — Julio 2026</h2>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-700">Turnos</p>
+                <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Mis turnos · Julio 2026</h1>
+              </div>
               <div className="flex gap-2">
-                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Cumplidos: {misTurnos.filter(t => t.estado === "cumplido").length}</span>
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Programados: {misTurnos.filter(t => t.estado === "programado").length}</span>
+                <span className="pill bg-emerald-50 text-emerald-700 border border-emerald-200">Cumplidos: {misTurnos.filter(t => t.estado === "cumplido").length}</span>
+                <span className="pill bg-blue-50 text-blue-700 border border-blue-200">Programados: {misTurnos.filter(t => t.estado === "programado").length}</span>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="rounded-2xl border border-ink-200 bg-white overflow-hidden shadow-elev-1">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-ink-50 border-b border-ink-200">
                   <tr>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Horario</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Horas</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Tipo</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Estado</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Notas</th>
+                    {["Fecha", "Horario", "Horas", "Tipo", "Estado", "Notas"].map((h) => (
+                      <th key={h} className="text-left px-4 py-3 text-[10.5px] font-bold text-ink-500 uppercase tracking-wider">{h}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -129,17 +133,15 @@ export function TrabajadorDashboard({ user, onLogout }: Props) {
                     const hFin = parseInt(turno.horaFin.split(":")[0]);
                     const horas = hFin - hInicio;
                     return (
-                      <tr key={turno.id} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">{turno.fecha}</td>
-                        <td className="px-4 py-3 text-sm text-gray-700">{turno.horaInicio} — {turno.horaFin}</td>
-                        <td className="px-4 py-3 text-sm text-gray-500">{horas}h</td>
-                        <td className={`px-4 py-3 text-sm capitalize ${getTurnoTipoColor(turno.tipo)}`}>{turno.tipo}</td>
+                      <tr key={turno.id} className="border-b border-ink-100 last:border-0 hover:bg-ink-50/60 transition-colors">
+                        <td className="px-4 py-3 text-[13px] font-semibold text-ink-900">{turno.fecha}</td>
+                        <td className="px-4 py-3 text-[13px] text-ink-700 font-mono">{turno.horaInicio} — {turno.horaFin}</td>
+                        <td className="px-4 py-3 text-[13px] text-ink-500">{horas}h</td>
+                        <td className={`px-4 py-3 text-[13px] capitalize font-medium ${getTurnoTipoColor(turno.tipo)}`}>{turno.tipo}</td>
                         <td className="px-4 py-3">
-                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${getTurnoColor(turno.estado)}`}>
-                            {turno.estado.toUpperCase()}
-                          </span>
+                          <span className={`pill ${getTurnoColor(turno.estado)}`}>{turno.estado.toUpperCase()}</span>
                         </td>
-                        <td className="px-4 py-3 text-xs text-gray-500">{turno.notas || "—"}</td>
+                        <td className="px-4 py-3 text-[11.5px] text-ink-500">{turno.notas || "—"}</td>
                       </tr>
                     );
                   })}
@@ -147,73 +149,70 @@ export function TrabajadorDashboard({ user, onLogout }: Props) {
               </table>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-              <p className="text-sm text-blue-800">
-                <strong>Resumen del mes:</strong> {misTurnos.filter(t => t.estado === "cumplido").length} turnos cumplidos | 
-                {misTurnos.filter(t => t.tipo === "extra").length} hora(s) extra registradas | 
-                0 ausencias
+            <div className="rounded-2xl bg-blue-50 border border-blue-200 p-4">
+              <p className="text-[13px] text-blue-900">
+                <strong>Resumen del mes:</strong> {misTurnos.filter(t => t.estado === "cumplido").length} turnos cumplidos · {misTurnos.filter(t => t.tipo === "extra").length} hora(s) extra registradas · 0 ausencias
               </p>
             </div>
           </div>
         )}
 
         {activeTab === "liquidaciones" && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-gray-900">Liquidaciones de Sueldo</h2>
-
-            {/* Liquidación actual detallada */}
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-medium text-gray-900">Julio 2026 (pendiente de pago)</h3>
-                <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">PENDIENTE</span>
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-gray-600">Salario base</span><span className="text-gray-900">{formatGuaranies(2800000)}</span></div>
-                <div className="flex justify-between"><span className="text-gray-600">Horas extra (12h × ₲23,333)</span><span className="text-green-600">+{formatGuaranies(280000)}</span></div>
-                <div className="flex justify-between"><span className="text-gray-600">Bonificaciones</span><span className="text-gray-900">{formatGuaranies(0)}</span></div>
-                <div className="flex justify-between border-t border-gray-200 pt-2"><span className="text-gray-600 font-medium">Total haberes</span><span className="text-gray-900 font-medium">{formatGuaranies(3080000)}</span></div>
-                <div className="flex justify-between text-red-600"><span>Descuento IPS (9%)</span><span>-{formatGuaranies(277200)}</span></div>
-                <div className="flex justify-between text-red-600"><span>Otros descuentos</span><span>-{formatGuaranies(0)}</span></div>
-                <div className="flex justify-between border-t border-gray-300 pt-2 text-lg font-bold"><span>NETO A PAGAR</span><span className="text-green-700">{formatGuaranies(2802800)}</span></div>
-              </div>
-              <div className="mt-4 flex gap-2">
-                <button className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">📄 Descargar PDF</button>
-              </div>
+          <div className="space-y-6">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-700">Liquidaciones</p>
+              <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Liquidaciones de sueldo</h1>
             </div>
 
-            {/* Historial */}
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                <h3 className="text-sm font-medium text-gray-900">Historial de liquidaciones</h3>
+            <div className="rounded-2xl border border-ink-200 bg-white p-6 shadow-elev-1">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-[11px] uppercase tracking-widest font-semibold text-ink-500">Julio 2026</p>
+                  <h3 className="text-[15px] font-bold text-ink-900">Detalle actual</h3>
+                </div>
+                <span className="pill bg-amber-50 text-amber-700 border border-amber-200">PENDIENTE</span>
+              </div>
+              <div className="space-y-2 text-[13.5px]">
+                <div className="flex justify-between py-1"><span className="text-ink-600">Salario base</span><span className="text-ink-900 font-medium">{formatGuaranies(2800000)}</span></div>
+                <div className="flex justify-between py-1"><span className="text-ink-600">Horas extra (12h × ₲23,333)</span><span className="text-emerald-600 font-medium">+{formatGuaranies(280000)}</span></div>
+                <div className="flex justify-between py-1"><span className="text-ink-600">Bonificaciones</span><span className="text-ink-500">{formatGuaranies(0)}</span></div>
+                <div className="flex justify-between py-2 border-t border-ink-200 mt-1"><span className="text-ink-700 font-semibold">Total haberes</span><span className="text-ink-900 font-semibold">{formatGuaranies(3080000)}</span></div>
+                <div className="flex justify-between py-1 text-rose-600"><span>Descuento IPS (9%)</span><span>-{formatGuaranies(277200)}</span></div>
+                <div className="flex justify-between py-1 text-ink-500"><span>Otros descuentos</span><span>-{formatGuaranies(0)}</span></div>
+                <div className="flex justify-between pt-3 mt-1 border-t-2 border-ink-900">
+                  <span className="text-[13px] font-bold text-ink-900">NETO A PAGAR</span>
+                  <span className="text-xl font-extrabold text-emerald-700">{formatGuaranies(2802800)}</span>
+                </div>
+              </div>
+              <button className="mt-4 inline-flex items-center gap-2 text-[12.5px] px-3.5 py-2 bg-blue-50 text-blue-700 rounded-xl hover:bg-blue-100 font-medium transition-colors">
+                📄 Descargar PDF
+              </button>
+            </div>
+
+            <div className="rounded-2xl border border-ink-200 bg-white overflow-hidden shadow-elev-1">
+              <div className="px-5 py-3 bg-ink-50 border-b border-ink-200">
+                <h3 className="text-[13.5px] font-bold text-ink-900">Historial de liquidaciones</h3>
               </div>
               <table className="w-full">
-                <thead className="border-b border-gray-200">
+                <thead className="border-b border-ink-200">
                   <tr>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Período</th>
-                    <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Salario base</th>
-                    <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Hrs. extra</th>
-                    <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Descuentos</th>
-                    <th className="text-right px-4 py-3 text-xs font-medium text-gray-500 uppercase">Neto</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">Estado</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase"></th>
+                    {["Período", "Salario base", "Hrs. extra", "Descuentos", "Neto", "Estado", ""].map((h, i) => (
+                      <th key={i} className={`text-${i === 0 || i === 5 || i === 6 ? "left" : "right"} px-4 py-3 text-[10.5px] font-bold text-ink-500 uppercase tracking-wider`}>{h}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
                   {misLiquidaciones.map(liq => (
-                    <tr key={liq.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">{liq.periodo}</td>
-                      <td className="px-4 py-3 text-sm text-right text-gray-700">{formatGuaranies(liq.salarioBase)}</td>
-                      <td className="px-4 py-3 text-sm text-right text-gray-700">{formatGuaranies(liq.montoHorasExtra)}</td>
-                      <td className="px-4 py-3 text-sm text-right text-red-600">-{formatGuaranies(liq.descuentoIps + liq.otrosDescuentos)}</td>
-                      <td className="px-4 py-3 text-sm text-right font-medium text-gray-900">{formatGuaranies(liq.netoAPagar)}</td>
+                    <tr key={liq.id} className="border-b border-ink-100 last:border-0 hover:bg-ink-50/60">
+                      <td className="px-4 py-3 text-[13px] font-semibold text-ink-900">{liq.periodo}</td>
+                      <td className="px-4 py-3 text-[13px] text-right text-ink-700">{formatGuaranies(liq.salarioBase)}</td>
+                      <td className="px-4 py-3 text-[13px] text-right text-ink-700">{formatGuaranies(liq.montoHorasExtra)}</td>
+                      <td className="px-4 py-3 text-[13px] text-right text-rose-600">-{formatGuaranies(liq.descuentoIps + liq.otrosDescuentos)}</td>
+                      <td className="px-4 py-3 text-[13px] text-right font-bold text-ink-900">{formatGuaranies(liq.netoAPagar)}</td>
                       <td className="px-4 py-3">
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${liq.estado === "pagado" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}>
-                          {liq.estado.toUpperCase()}
-                        </span>
+                        <span className={`pill ${liq.estado === "pagado" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-amber-50 text-amber-700 border border-amber-200"}`}>{liq.estado.toUpperCase()}</span>
                       </td>
-                      <td className="px-4 py-3">
-                        <button className="text-xs text-blue-600 hover:underline">📄 PDF</button>
-                      </td>
+                      <td className="px-4 py-3"><button className="text-[12px] text-blue-600 hover:text-blue-800 font-medium">📄 PDF</button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -223,142 +222,120 @@ export function TrabajadorDashboard({ user, onLogout }: Props) {
         )}
 
         {activeTab === "contrato" && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-gray-900">Mi Contrato</h2>
+          <div className="space-y-6">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-700">Contrato</p>
+              <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Mi contrato</h1>
+            </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-medium text-gray-900">{miContrato.tipoContrato}</h3>
-                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">VIGENTE</span>
+            <div className="rounded-2xl border border-ink-200 bg-white p-6 shadow-elev-1">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <div>
+                  <p className="text-[11px] uppercase tracking-widest font-semibold text-ink-500">Tipo</p>
+                  <h3 className="text-[15px] font-bold text-ink-900">{miContrato.tipoContrato}</h3>
+                </div>
+                <span className="pill bg-emerald-50 text-emerald-700 border border-emerald-200">VIGENTE</span>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-xs text-gray-500">Cargo</span>
-                    <p className="text-gray-900 font-medium">{miContrato.cargo}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-[13px]">
+                {[
+                  { l: "Cargo", v: miContrato.cargo },
+                  { l: "Jornada laboral", v: miContrato.jornadaSemanal },
+                  { l: "Fecha de inicio", v: miContrato.fechaInicio },
+                  { l: "Días de descanso", v: miContrato.diasDescanso },
+                  { l: "Fecha de término", v: miContrato.fechaFin || "Indefinido" },
+                  { l: "Vacaciones anuales", v: `${miContrato.vacacionesDias} días (${miContrato.vacacionesDias - miContrato.vacacionesUsadas} disponibles)` },
+                  { l: "Salario base mensual", v: formatGuaranies(miContrato.salarioBase), bold: true },
+                  { l: "Aguinaldo proporcional", v: formatGuaranies(miContrato.aguinaldoProporcional) },
+                ].map((f) => (
+                  <div key={f.l}>
+                    <p className="text-[10.5px] uppercase tracking-widest font-semibold text-ink-500">{f.l}</p>
+                    <p className={`mt-0.5 ${f.bold ? "text-[15px] font-bold text-ink-900" : "text-ink-800"}`}>{f.v}</p>
                   </div>
-                  <div>
-                    <span className="text-xs text-gray-500">Fecha de inicio</span>
-                    <p className="text-gray-900">{miContrato.fechaInicio}</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-500">Fecha de término</span>
-                    <p className="text-gray-900">{miContrato.fechaFin || "Indefinido"}</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-500">Salario base mensual</span>
-                    <p className="text-gray-900 font-bold">{formatGuaranies(miContrato.salarioBase)}</p>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-xs text-gray-500">Jornada laboral</span>
-                    <p className="text-gray-900">{miContrato.jornadaSemanal}</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-500">Días de descanso</span>
-                    <p className="text-gray-900">{miContrato.diasDescanso}</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-500">Vacaciones anuales</span>
-                    <p className="text-gray-900">{miContrato.vacacionesDias} días ({miContrato.vacacionesDias - miContrato.vacacionesUsadas} disponibles)</p>
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-500">Aguinaldo proporcional</span>
-                    <p className="text-gray-900">{formatGuaranies(miContrato.aguinaldoProporcional)}</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
-            {/* Cláusulas */}
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">Cláusulas especiales</h3>
+            <div className="rounded-2xl border border-ink-200 bg-white p-6 shadow-elev-1">
+              <h3 className="text-[13.5px] font-bold text-ink-900 mb-3">Cláusulas especiales</h3>
               <ul className="space-y-2">
                 {miContrato.clausulasEspeciales.map((c, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-gray-400 mt-0.5">•</span>
+                  <li key={i} className="flex items-start gap-2 text-[13px] text-ink-700">
+                    <span className="text-blue-500 mt-0.5">▸</span>
                     {c}
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Beneficios */}
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">Beneficios</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                <div className="flex items-center gap-2 text-green-700"><span>✓</span> Seguro IPS (salud + jubilación)</div>
-                <div className="flex items-center gap-2 text-green-700"><span>✓</span> Aguinaldo (13° salario)</div>
-                <div className="flex items-center gap-2 text-green-700"><span>✓</span> Vacaciones remuneradas (12 días/año)</div>
-                <div className="flex items-center gap-2 text-green-700"><span>✓</span> Uniforme proporcionado</div>
-                <div className="flex items-center gap-2 text-green-700"><span>✓</span> Bonificación por antigüedad (desde 2° año)</div>
-                <div className="flex items-center gap-2 text-gray-400"><span>○</span> Vale de almuerzo (no aplica)</div>
+            <div className="rounded-2xl border border-ink-200 bg-white p-6 shadow-elev-1">
+              <h3 className="text-[13.5px] font-bold text-ink-900 mb-3">Beneficios</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {[
+                  { c: true, l: "Seguro IPS (salud + jubilación)" },
+                  { c: true, l: "Aguinaldo (13° salario)" },
+                  { c: true, l: "Vacaciones remuneradas (12 días/año)" },
+                  { c: true, l: "Uniforme proporcionado" },
+                  { c: true, l: "Bonificación por antigüedad (desde 2° año)" },
+                  { c: false, l: "Vale de almuerzo (no aplica)" },
+                ].map((b, i) => (
+                  <div key={i} className={`flex items-center gap-2 text-[13px] ${b.c ? "text-emerald-700" : "text-ink-400"}`}>
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold ${b.c ? "bg-emerald-500" : "bg-ink-200"}`}>
+                      {b.c ? "✓" : "—"}
+                    </span>
+                    {b.l}
+                  </div>
+                ))}
               </div>
             </div>
 
-            <button className="text-sm px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100">
+            <button className="inline-flex items-center gap-2 text-[13px] px-4 py-2.5 bg-blue-50 text-blue-700 rounded-xl hover:bg-blue-100 font-semibold transition-colors">
               📄 Descargar contrato completo (PDF)
             </button>
           </div>
         )}
 
         {activeTab === "solicitudes" && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Mis Solicitudes</h2>
-              <button className="px-4 py-2 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700">+ Nueva solicitud</button>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-700">Solicitudes</p>
+                <h1 className="text-2xl font-extrabold text-ink-900 mt-1">Mis solicitudes</h1>
+              </div>
+              <button className="px-4 py-2.5 bg-gradient-to-br from-amber-500 to-orange-600 text-white text-[13px] font-semibold rounded-xl shadow-elev-1 hover:shadow-elev-2 transition-all">
+                + Nueva solicitud
+              </button>
             </div>
 
-            {/* Solicitudes existentes */}
             <div className="space-y-3">
-              <div className="bg-white rounded-xl border border-gray-200 p-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-sm font-medium text-gray-900">Solicitud de vacaciones</h3>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-800">APROBADA</span>
+              {[
+                { t: "Solicitud de vacaciones", d: "5 días: 01/08/2026 al 05/08/2026", meta: "Enviada: 10/07/2026 · Aprobada: 12/07/2026", s: "APROBADA", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+                { t: "Solicitud de cambio de turno", d: "Cambiar turno del 28/07 con Juan R. Bogado (guardia nocturno)", meta: "Enviada: 18/07/2026", s: "PENDIENTE", color: "bg-amber-50 text-amber-700 border-amber-200" },
+                { t: "Certificado laboral", d: "Certificado para trámite bancario personal", meta: "Enviada: 01/06/2026 · Entregada: 03/06/2026", s: "COMPLETADA", color: "bg-emerald-50 text-emerald-700 border-emerald-200", download: true },
+              ].map((sol, i) => (
+                <div key={i} className="rounded-2xl border border-ink-200 bg-white p-4 hover:shadow-elev-2 transition-shadow">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <h3 className="text-[13.5px] font-semibold text-ink-900">{sol.t}</h3>
+                        <span className={`pill border ${sol.color}`}>{sol.s}</span>
+                      </div>
+                      <p className="text-[13px] text-ink-700">{sol.d}</p>
+                      <p className="text-[11px] text-ink-400 mt-1 font-medium">{sol.meta}</p>
                     </div>
-                    <p className="text-sm text-gray-600">5 días: 01/08/2026 al 05/08/2026</p>
-                    <p className="text-xs text-gray-400 mt-1">Enviada: 10/07/2026 | Aprobada: 12/07/2026</p>
+                    {sol.download && (
+                      <button className="text-[11.5px] px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-semibold">📄 Descargar</button>
+                    )}
                   </div>
                 </div>
-              </div>
-              <div className="bg-white rounded-xl border border-gray-200 p-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-sm font-medium text-gray-900">Solicitud de cambio de turno</h3>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800">PENDIENTE</span>
-                    </div>
-                    <p className="text-sm text-gray-600">Cambiar turno del 28/07 con Juan R. Bogado (guardia nocturno)</p>
-                    <p className="text-xs text-gray-400 mt-1">Enviada: 18/07/2026</p>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white rounded-xl border border-gray-200 p-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-sm font-medium text-gray-900">Certificado laboral</h3>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-800">COMPLETADA</span>
-                    </div>
-                    <p className="text-sm text-gray-600">Certificado para trámite bancario personal</p>
-                    <p className="text-xs text-gray-400 mt-1">Enviada: 01/06/2026 | Entregada: 03/06/2026</p>
-                  </div>
-                  <button className="text-xs px-3 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">📄 Descargar</button>
-                </div>
-              </div>
+              ))}
             </div>
 
-            {/* Formulario nueva solicitud */}
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <h3 className="text-sm font-medium text-gray-900 mb-4">Enviar nueva solicitud</h3>
+            <div className="rounded-2xl border border-ink-200 bg-white p-6 shadow-elev-1">
+              <h3 className="text-[13.5px] font-bold text-ink-900 mb-4">Enviar nueva solicitud</h3>
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs text-gray-500">Tipo de solicitud</label>
-                  <select className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                  <label className="text-[10.5px] uppercase tracking-widest font-semibold text-ink-500">Tipo de solicitud</label>
+                  <select className="w-full mt-1.5 px-3.5 py-2.5 border border-ink-200 rounded-xl text-[13.5px] bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none">
                     <option>Vacaciones</option>
                     <option>Permiso (con goce)</option>
                     <option>Permiso (sin goce)</option>
@@ -369,20 +346,20 @@ export function TrabajadorDashboard({ user, onLogout }: Props) {
                   </select>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs text-gray-500">Fecha inicio</label>
-                    <input type="date" className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-500">Fecha fin</label>
-                    <input type="date" className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-                  </div>
+                  {["Fecha inicio", "Fecha fin"].map((l) => (
+                    <div key={l}>
+                      <label className="text-[10.5px] uppercase tracking-widest font-semibold text-ink-500">{l}</label>
+                      <input type="date" className="w-full mt-1.5 px-3.5 py-2.5 border border-ink-200 rounded-xl text-[13.5px] focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none" />
+                    </div>
+                  ))}
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500">Motivo / Detalle</label>
-                  <textarea rows={3} placeholder="Describa el motivo de su solicitud..." className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"></textarea>
+                  <label className="text-[10.5px] uppercase tracking-widest font-semibold text-ink-500">Motivo / Detalle</label>
+                  <textarea rows={3} placeholder="Describa el motivo de su solicitud..." className="w-full mt-1.5 px-3.5 py-2.5 border border-ink-200 rounded-xl text-[13.5px] focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none resize-none" />
                 </div>
-                <button className="px-4 py-2 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700">Enviar solicitud</button>
+                <button className="px-4 py-2.5 bg-gradient-to-br from-amber-500 to-orange-600 text-white text-[13.5px] font-semibold rounded-xl hover:shadow-elev-2 transition-all">
+                  Enviar solicitud
+                </button>
               </div>
             </div>
           </div>

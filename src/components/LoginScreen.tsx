@@ -1,78 +1,117 @@
 "use client";
 
-import { users } from "@/data/mock-data";
-
 interface LoginScreenProps {
   onLogin: (userId: string) => void;
   onBack?: () => void;
 }
 
+const profiles = [
+  {
+    id: "u1",
+    initials: "CM",
+    name: "Carlos Méndez",
+    role: "Super Admin — Plataforma",
+    gradient: "from-violet-500 to-fuchsia-600",
+    ring: "ring-violet-200/60",
+    tag: "text-violet-700",
+    accent: "hover:border-violet-400 hover:bg-violet-50/70",
+    dot: "bg-violet-500",
+  },
+  {
+    id: "u2",
+    initials: "MG",
+    name: "María González",
+    role: "Administrador — Torre Ñandutí",
+    gradient: "from-blue-500 to-indigo-600",
+    ring: "ring-blue-200/60",
+    tag: "text-blue-700",
+    accent: "hover:border-blue-400 hover:bg-blue-50/70",
+    dot: "bg-blue-500",
+  },
+  {
+    id: "u3",
+    initials: "RD",
+    name: "Roberto Díaz",
+    role: "Residente — Depto 4A, Torre Ñandutí",
+    gradient: "from-emerald-500 to-teal-600",
+    ring: "ring-emerald-200/60",
+    tag: "text-emerald-700",
+    accent: "hover:border-emerald-400 hover:bg-emerald-50/70",
+    dot: "bg-emerald-500",
+  },
+  {
+    id: "u6",
+    initials: "MP",
+    name: "Miguel Paredes",
+    role: "Trabajador — Conserje, Torre Ñandutí",
+    gradient: "from-amber-500 to-orange-600",
+    ring: "ring-amber-200/60",
+    tag: "text-amber-700",
+    accent: "hover:border-amber-400 hover:bg-amber-50/70",
+    dot: "bg-amber-500",
+  },
+];
+
 export function LoginScreen({ onLogin, onBack }: LoginScreenProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <img src="/Logo Light.png" alt="ComuniPy" className="h-28 mx-auto mb-4 object-contain" />
-          <p className="text-gray-500 mt-1">Administración de Comunidades</p>
+    <div className="min-h-screen relative flex items-center justify-center p-4 bg-mesh-light overflow-hidden" data-testid="login-screen">
+      <div className="absolute inset-0 bg-grid-slate opacity-70 pointer-events-none" />
+      <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-blue-300/20 blur-3xl" />
+      <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-cyan-300/20 blur-3xl" />
+
+      <div className="relative w-full max-w-md anim-fade-up">
+        <div className="rounded-3xl glass-strong shadow-elev-3 p-8">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest bg-blue-100 text-blue-800 mb-5">
+              <span className="dot-live"></span>
+              Modo demo
+            </div>
+            <img src="/Logo Light.png" alt="ComuniPy" className="h-20 mx-auto object-contain" />
+            <h1 className="mt-3 text-lg font-bold text-ink-900">Bienvenido a ComuniPy</h1>
+            <p className="text-[13px] text-ink-500 mt-1">Selecciona un perfil para explorar la plataforma</p>
+          </div>
+
+          <div className="space-y-2.5">
+            {profiles.map((p, i) => (
+              <button
+                key={p.id}
+                onClick={() => onLogin(p.id)}
+                data-testid={`login-profile-${p.id}`}
+                className={`group w-full flex items-center gap-3 p-3 rounded-2xl bg-white border border-ink-200 ${p.accent} transition-all anim-fade-up`}
+                style={{ animationDelay: `${100 + i * 60}ms` }}
+              >
+                <div className={`relative w-11 h-11 rounded-xl bg-gradient-to-br ${p.gradient} flex items-center justify-center text-white font-bold text-[13px] shadow-elev-1 ring-2 ${p.ring}`}>
+                  {p.initials}
+                  <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full ${p.dot} border-2 border-white`} />
+                </div>
+                <div className="text-left flex-1 min-w-0">
+                  <p className="text-[14px] font-semibold text-ink-900 truncate">{p.name}</p>
+                  <p className={`text-[11.5px] font-medium ${p.tag} truncate`}>{p.role}</p>
+                </div>
+                <span className="text-ink-400 group-hover:text-ink-700 group-hover:translate-x-0.5 transition-all">→</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-7 pt-5 border-t border-ink-200/70">
+            <p className="text-[11px] text-center text-ink-400 mb-3">
+              Mock funcional — cada rol tiene vistas y permisos distintos
+            </p>
+            {onBack && (
+              <button
+                onClick={onBack}
+                data-testid="login-back-btn"
+                className="w-full inline-flex items-center justify-center gap-2 text-[13px] text-ink-500 hover:text-ink-900 py-2 rounded-lg hover:bg-ink-50 transition-colors"
+              >
+                ← Volver al inicio
+              </button>
+            )}
+          </div>
         </div>
 
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-gray-700 mb-2">Seleccionar usuario (Demo):</p>
-
-          <button
-            onClick={() => onLogin("u1")}
-            className="w-full flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all"
-          >
-            <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">CM</div>
-            <div className="text-left">
-              <p className="font-medium text-gray-900">Carlos Méndez</p>
-              <p className="text-xs text-purple-600 font-medium">Super Admin — Plataforma</p>
-            </div>
-          </button>
-
-          <button
-            onClick={() => onLogin("u2")}
-            className="w-full flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all"
-          >
-            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">MG</div>
-            <div className="text-left">
-              <p className="font-medium text-gray-900">María González</p>
-              <p className="text-xs text-blue-600 font-medium">Administrador — Torre Ñandutí</p>
-            </div>
-          </button>
-
-          <button
-            onClick={() => onLogin("u3")}
-            className="w-full flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all"
-          >
-            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm">RD</div>
-            <div className="text-left">
-              <p className="font-medium text-gray-900">Roberto Díaz</p>
-              <p className="text-xs text-green-600 font-medium">Residente — Depto 4A, Torre Ñandutí</p>
-            </div>
-          </button>
-
-          <button
-            onClick={() => onLogin("u6")}
-            className="w-full flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all"
-          >
-            <div className="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center text-white font-bold text-sm">MP</div>
-            <div className="text-left">
-              <p className="font-medium text-gray-900">Miguel Paredes</p>
-              <p className="text-xs text-amber-600 font-medium">Trabajador — Conserje, Torre Ñandutí</p>
-            </div>
-          </button>
-        </div>
-        <div className="mt-6 pt-4 border-t border-gray-200">
-          <p className="text-xs text-center text-gray-400 mb-3">
-            Mock funcional — Cada rol tiene vistas y permisos distintos
-          </p>
-          {onBack && (
-            <button onClick={onBack} className="w-full text-sm text-gray-500 hover:text-gray-900 py-2">
-              ← Volver al inicio
-            </button>
-          )}
-        </div>
+        <p className="text-center text-[11px] text-ink-400 mt-4">
+          © 2026 ComuniPy · Asunción, Paraguay
+        </p>
       </div>
     </div>
   );
