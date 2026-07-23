@@ -1,5 +1,7 @@
 "use client";
 
+import { ROICalculator } from "./ROICalculator";
+
 interface Props {
   onLogin: () => void;
 }
@@ -82,6 +84,7 @@ export function LandingPage({ onLogin }: Props) {
                 { href: "#modulos", label: "Módulos" },
                 { href: "#como-funciona", label: "Cómo funciona" },
                 { href: "#beneficios", label: "Beneficios" },
+                { href: "#calculadora", label: "ROI" },
               ].map((n) => (
                 <a
                   key={n.href}
@@ -382,6 +385,8 @@ export function LandingPage({ onLogin }: Props) {
           </div>
         </div>
       </section>
+
+      <ROICalculator onCta={onLogin} />
 
       {/* CTA */}
       <section id="contacto" className="py-24 px-4">
