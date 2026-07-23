@@ -3,10 +3,6 @@
 @tailwind utilities;
 
 :root {
-  --font-display: var(--font-display), "Plus Jakarta Sans", ui-sans-serif, system-ui;
-  --font-body: var(--font-body), "Manrope", ui-sans-serif, system-ui;
-  --font-mono: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
-
   /* Brand */
   --brand-50: #eff6ff;
   --brand-100: #dbeafe;
@@ -26,7 +22,7 @@
 }
 
 html, body {
-  font-family: var(--font-body);
+  font-family: var(--font-body), "Manrope", ui-sans-serif, system-ui, sans-serif;
   color: var(--ink-900);
   background: #ffffff;
   -webkit-font-smoothing: antialiased;

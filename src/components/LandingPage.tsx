@@ -121,19 +121,11 @@ export function LandingPage({ onLogin }: Props) {
       <section className="relative pt-32 pb-24 px-4 overflow-hidden bg-mesh-light">
         <div className="absolute inset-0 bg-grid-slate opacity-70 pointer-events-none" />
         <div className="relative max-w-6xl mx-auto">
-          {/* Badge */}
-          <div className="flex justify-center mb-6 anim-fade-up">
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-semibold uppercase tracking-wider bg-white border border-ink-200 shadow-elev-1 text-ink-700">
-              <span className="dot-live"></span>
-              Nueva plataforma para Paraguay · 2026
-            </span>
-          </div>
-
           {/* Title */}
           <h1 className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-[68px] leading-[1.05] font-extrabold text-ink-900 anim-fade-up delay-100">
             El software de administración<br className="hidden sm:block" /> de edificios
             <span className="ml-2 inline-block text-gradient-brand">más completo</span><br className="hidden sm:block" />
-            del mercado paraguayo.
+            del mercado.
           </h1>
 
           {/* Subtitle */}
@@ -162,7 +154,7 @@ export function LandingPage({ onLogin }: Props) {
           {/* Trust bar */}
           <div className="mt-14 anim-fade-up delay-400">
             <p className="text-center text-[11px] font-semibold uppercase tracking-widest text-ink-500 mb-4">
-              Diseñado para el mercado paraguayo
+              Integrado con los principales medios de pago
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               {["SPI", "Tigo Money", "Personal Pay", "Bancard", "IPS", "SET"].map((m) => (

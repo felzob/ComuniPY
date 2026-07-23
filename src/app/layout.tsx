@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${jakarta.variable} ${manrope.variable} ${mono.variable}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased font-sans">{children}</body>
     </html>
   );
 }
